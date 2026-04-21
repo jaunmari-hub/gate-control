@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gate Control">
+<meta name="theme-color" content="#0f6e56">
+<title>Gate Access Control</title>
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Gate+Access+Control%22%2C%22short_name%22%3A%22Gate+Control%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f6e56%22%2C%22theme_color%22%3A%22%230f6e56%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg+xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'+viewBox%3D'0+0+192+192'%253E%253Crect+width%3D'192'+height%3D'192'+rx%3D'40'+fill%3D'%25230f6e56'%2F%253E%253Crect+x%3D'56'+y%3D'96'+width%3D'80'+height%3D'64'+rx%3D'8'+fill%3D'white'%2F%253E%253Cpath+d%3D'M72+96V72a24+24+0+0+1+48+0v24'+stroke%3D'white'+stroke-width%3D'10'+fill%3D'none'+stroke-linecap%3D'round'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --g:#0f6e56;--gm:#1d9e75;--gl:#e1f5ee;
+  --am:#ba7517;--al:#faeeda;
+  --rd:#a32d2d;--rl:#fcebeb;
+  --pu:#534ab7;--pl:#eeedfe;
+  --bd:rgba(0,0,0,0.1);--r:10px;--rs:7px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#eff1ef;color:#1a1a1a;min-height:100vh;font-size:14px}
+input,select,textarea,button{font-family:inherit;font-size:14px}
+.app{max-width:430px;margin:0 auto;min-height:100vh}
+
+/* HEADER */
+.hdr{background:var(--g);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.hdr-ic{width:34px;height:34px;background:rgba(255,255,255,.18);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr h1{font-size:15px;font-weight:700;letter-spacing:.03em}
+.hdr-sub{font-size:10px;opacity:.7;margin-top:1px}
+.dot{width:8px;height:8px;background:#4ade80;border-radius:50%;margin-left:auto;animation:blink 2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.hdr-ic:hover #logoHint { display:flex !important; }
+.hdr-ic:active { transform: scale(0.93); }
+.tabs{display:flex;background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:58px;z-index:90}
+.tab{flex:1;padding:9px 2px 7px;font-size:10px;font-weight:700;text-align:center;cursor:pointer;border-bottom:2.5px solid transparent;color:#999;text-transform:uppercase;letter-spacing:.04em;transition:all .2s}
+.tab.on{color:var(--g);border-color:var(--g)}
+.tab i{font-size:16px;display:block;margin-bottom:2px;font-style:normal}
+
+/* PAGES */
+.pg{display:none;padding:14px 14px 30px}
+.pg.on{display:block}
+
+/* CARDS */
+.card{background:#fff;border-radius:var(--r);border:.5px solid var(--bd);padding:14px;margin-bottom:10px}
+.ct{font-size:12px;font-weight:700;color:var(--g);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+
+/* FIELDS */
+.f{margin-bottom:10px}
+.f label{font-size:11px;font-weight:700;color:#777;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;display:block}
+.f label.req::after{content:' *';color:var(--rd)}
+.f input,.f select,.f textarea{width:100%;padding:9px 11px;border:1.5px solid #e0e0e0;border-radius:var(--rs);background:#fafafa;color:#1a1a1a;outline:none}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gm);background:#fff}
+.f textarea{resize:none;height:60px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.plate{font-family:monospace;font-size:18px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+
+/* IN/OUT */
+.iotog{display:flex;border-radius:var(--rs);overflow:hidden;border:2px solid var(--g);margin-bottom:12px}
+.iob{flex:1;padding:11px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#999;letter-spacing:.03em}
+.iob.in.on{background:var(--g);color:#fff}
+.iob.out.on{background:var(--rd);color:#fff}
+
+/* CLOCK */
+.clk{background:var(--gl);border:1px solid rgba(29,158,117,.3);border-radius:var(--rs);padding:8px 12px;font-size:12px;font-weight:700;color:var(--g);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+
+/* TYPE GRID */
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.topt{background:#fff;border:2px solid #e0e0e0;border-radius:var(--r);padding:11px 8px;text-align:center;cursor:pointer;transition:all .15s}
+.topt:active{transform:scale(.97)}
+.topt.on{border-color:var(--g);background:var(--gl)}
+.topt .tic{font-size:22px;margin-bottom:4px}
+.topt .tlb{font-size:11px;font-weight:700;color:#666}
+.topt.on .tlb{color:var(--g)}
+
+/* CHECKLIST */
+.chklist{display:flex;flex-direction:column;gap:7px}
+.chi{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#fafafa;border-radius:var(--rs);border:1px solid #eee;cursor:pointer;transition:background .1s}
+.chi.on{background:var(--gl);border-color:rgba(29,158,117,.3)}
+.chb{width:20px;height:20px;border-radius:5px;border:2px solid #ccc;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.chi.on .chb{background:var(--g);border-color:var(--g)}
+.chl{font-size:13px;font-weight:500;flex:1}
+.chc{width:62px}
+.chc input{padding:5px 6px;border:1px solid #ddd;border-radius:5px;text-align:center;width:100%}
+
+/* TRAILER */
+.tr-sec{margin-top:8px;padding:10px 12px;background:var(--al);border-radius:var(--rs);border:1px solid rgba(186,117,23,.25)}
+
+/* PAY */
+.prow{display:flex;gap:8px;margin-bottom:8px}
+.popt{flex:1;padding:9px;border-radius:var(--rs);border:2px solid #ddd;text-align:center;cursor:pointer;font-size:12px;font-weight:700}
+.popt.ppaid{border-color:var(--gm);background:var(--gl);color:var(--g)}
+.popt.punpaid{border-color:#e24b4a;background:var(--rl);color:var(--rd)}
+.popt.op{background:var(--g);color:#fff;border-color:var(--g)}
+.popt.ou{background:var(--rd);color:#fff;border-color:var(--rd)}
+
+/* PHOTOS */
+.pstrip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-top:6px}
+.pthumb{width:68px;height:68px;border-radius:8px;object-fit:cover;flex-shrink:0;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.15);cursor:pointer}
+.padd{width:68px;height:68px;border-radius:8px;border:2px dashed #ccc;background:#fafafa;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;flex-shrink:0;font-size:10px;color:#aaa}
+
+/* SUBMIT */
+.subbtn{width:100%;padding:13px;background:var(--g);color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.02em}
+.subbtn.out{background:var(--rd)}
+.subbtn:active{transform:scale(.98)}
+
+/* YARD ALERT */
+.yalert{background:var(--al);border:1px solid rgba(186,117,23,.35);border-radius:var(--rs);padding:9px 12px;margin-bottom:10px;font-size:12px;color:var(--am);font-weight:600;display:flex;align-items:flex-start;gap:7px}
+
+/* LOG */
+.lsearch{width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:var(--rs);background:#fff;margin-bottom:10px}
+.lfrow{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
+.pill{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid #ddd;cursor:pointer;white-space:nowrap;background:#fff;color:#888;flex-shrink:0}
+.pill.on{background:var(--g);color:#fff;border-color:var(--g)}
+.lcard{background:#fff;border-radius:var(--r);border:.5px solid var(--bd);margin-bottom:8px;overflow:hidden;cursor:pointer}
+.lcard:active{background:#f8f8f6}
+.ltop{display:flex;gap:10px;padding:11px 12px}
+.lthumb{width:50px;height:50px;border-radius:7px;object-fit:cover;background:#eee;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden}
+.lthumb img{width:100%;height:100%;object-fit:cover}
+.linfo{flex:1;min-width:0}
+.lplate{font-size:15px;font-weight:800;letter-spacing:1.5px;font-family:monospace}
+.lname{font-size:12px;color:#777;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ltime{font-size:10px;color:#aaa;text-align:right;white-space:nowrap;flex-shrink:0}
+.lbadges{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.bdg{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.bv{background:#e6f1fb;color:#185fa5}
+.bc{background:var(--gl);color:var(--g)}
+.bt{background:var(--al);color:var(--am)}
+.bf{background:var(--pl);color:var(--pu)}
+.bin{background:#e1f5ee;color:#0f6e56}
+.bout{background:var(--rl);color:var(--rd)}
+.byard{background:var(--al);color:var(--am)}
+.bpaid{background:#e1f5ee;color:#0f6e56}
+.bunpaid{background:var(--rl);color:var(--rd)}
+
+/* LOG ENTRY: IN+OUT timeline */
+.lbottom{border-top:.5px solid #f0f0f0;padding:8px 12px;display:flex;gap:8px;flex-wrap:wrap}
+.ts-chip{font-size:10px;font-weight:600;padding:3px 8px;border-radius:8px;display:flex;align-items:center;gap:4px}
+.ts-in{background:#e1f5ee;color:#0f6e56}
+.ts-out{background:var(--rl);color:var(--rd)}
+.ts-pending{background:#f5f5f3;color:#999}
+
+/* YARD */
+.ycard{background:#fff;border-radius:var(--r);border:.5px solid var(--bd);padding:12px;margin-bottom:8px;cursor:pointer}
+
+/* STATS */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.sc{background:#fff;border-radius:var(--r);padding:14px;border:.5px solid var(--bd)}
+.sn{font-size:28px;font-weight:800;color:var(--g)}
+.sl{font-size:11px;color:#999;margin-top:2px}
+.bar{margin-bottom:10px}
+.brt{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.brb{height:7px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.brf{height:100%;background:var(--g);border-radius:4px}
+.ra-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid #f5f5f5}
+.ra-item:last-child{border:none}
+
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:flex;align-items:flex-end}
+.mbg.hide{display:none}
+.modal{background:#fff;border-radius:18px 18px 0 0;padding:18px 16px 30px;width:100%;max-height:90vh;overflow-y:auto}
+.mh{width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px}
+.mt{font-size:17px;font-weight:800;margin-bottom:2px}
+.ms{font-size:12px;color:#999;margin-bottom:14px}
+.mphotos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.mphotos img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.ir{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:.5px solid #f5f5f5}
+.ir:last-child{border:none}
+.ir .lb{font-size:11px;color:#999;font-weight:600}
+.ir .vl{font-size:12px;font-weight:700;text-align:right;max-width:60%}
+.msec{font-size:11px;font-weight:800;color:var(--g);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 6px}
+.cbtn{width:100%;padding:11px;background:#f5f5f3;border:none;border-radius:var(--rs);font-size:14px;cursor:pointer;margin-top:12px;font-weight:600}
+
+/* FLASH */
+.flash{position:fixed;top:74px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:9px 18px;border-radius:20px;font-size:12px;z-index:999;opacity:0;transition:opacity .25s;white-space:nowrap;pointer-events:none}
+.flash.on{opacity:1}
+input[type=file]{display:none}
+.empty{text-align:center;padding:40px 0;color:#ccc;font-size:13px}
+
+/* SHARE BTN */
+.share-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:#25d366;color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:700;cursor:pointer}
+.exp-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--g);color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:700;cursor:pointer}
+/* ACTION BTNS in detail */
+.act-row{display:flex;gap:8px;margin-top:14px}
+.act-edit{flex:1;padding:11px;background:var(--gl);color:var(--g);border:1.5px solid var(--gm);border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.act-del{flex:1;padding:11px;background:var(--rl);color:var(--rd);border:1.5px solid #e24b4a;border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.act-edit:active,.act-del:active{transform:scale(.97)}
+/* EDIT MODAL sections */
+.esec{font-size:11px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px;padding-bottom:4px;border-bottom:1.5px solid var(--gl)}
+.esave{width:100%;padding:13px;background:var(--g);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;margin-bottom:8px}
+.esave:active{transform:scale(.98)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="hdr">
+  <div class="hdr-ic" id="logoBtn" onclick="document.getElementById('logoFile').click()" title="Tap to upload your logo" style="cursor:pointer;overflow:hidden;position:relative">
+    <img id="logoImg" style="width:100%;height:100%;object-fit:cover;border-radius:8px;display:none">
+    <svg id="logoSvg" width="18" height="18" fill="none" stroke="#fff" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <div id="logoHint" style="position:absolute;inset:0;background:rgba(0,0,0,0.35);display:none;align-items:center;justify-content:center;border-radius:8px;font-size:8px;color:#fff;font-weight:700;text-align:center;line-height:1.2">TAP<br>LOGO</div>
+  </div>
+  <input type="file" id="logoFile" accept="image/*" onchange="uploadLogo(event)">
+  <div><h1 id="siteTitle">GATE CONTROL</h1><div class="hdr-sub" id="siteSub">Tap lock icon to add your logo</div></div>
+  <div class="dot"></div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" onclick="goTab('new')"><i>➕</i>New</div>
+  <div class="tab" onclick="goTab('log')"><i>📋</i>Log</div>
+  <div class="tab" onclick="goTab('yard')"><i>🚛</i>Yard</div>
+  <div class="tab" onclick="goTab('stats')"><i>📊</i>Stats</div>
+</div>
+
+<!-- ===== NEW ENTRY ===== -->
+<div id="pg-new" class="pg on">
+
+  <div class="clk">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span id="clk"></span>
+  </div>
+
+  <div class="iotog">
+    <button class="iob in on" id="ioIn" onclick="setIO('in')">⬇ BOOK IN</button>
+    <button class="iob out" id="ioOut" onclick="setIO('out')">⬆ BOOK OUT</button>
+  </div>
+
+  <div class="card">
+    <div class="ct">Entry Category</div>
+    <div class="tgrid">
+      <div class="topt on" onclick="setType('visitor')" id="t-visitor"><div class="tic">👤</div><div class="tlb">Visitor</div></div>
+      <div class="topt" onclick="setType('company')" id="t-company"><div class="tic">🏢</div><div class="tlb">Company Vehicle</div></div>
+      <div class="topt" onclick="setType('truck')" id="t-truck"><div class="tic">🚛</div><div class="tlb">Truck Stop</div></div>
+      <div class="topt" onclick="setType('fleet')" id="t-fleet"><div class="tic">⚙️</div><div class="tlb">Fleet Equipment</div></div>
+    </div>
+  </div>
+
+  <!-- GUARD NAME - on all forms -->
+  <div class="card">
+    <div class="ct">Guard on Duty</div>
+    <div class="f"><label class="req">Guard Name</label><input type="text" id="guardName" placeholder="Enter your name"></div>
+  </div>
+
+  <!-- VEHICLE REG -->
+  <div class="card">
+    <div class="ct">Vehicle</div>
+    <div class="f"><label class="req">Registration / License Plate</label><input type="text" id="reg" class="plate" placeholder="e.g. ABC 123 GP" oninput="this.value=this.value.toUpperCase();checkYard()"></div>
+    <div id="yalert" class="yalert" style="display:none">⚠️ <span id="yalertMsg"></span></div>
+    <div class="f">
+      <label>Photos (plate, disk, vehicle)</label>
+      <div class="pstrip" id="mainStrip"></div>
+      <input type="file" id="mainFile" accept="image/*" capture="environment" onchange="addPhoto(event,'main')">
+    </div>
+  </div>
+
+  <!-- VISITOR -->
+  <div id="form-visitor">
+    <div class="card">
+      <div class="ct">👤 Visitor Details</div>
+      <div class="f"><label class="req">Driver / Visitor Name</label><input id="v-name" placeholder="Full name"></div>
+      <div class="f"><label class="req">Company / Organisation</label><input id="v-company" placeholder="Company name"></div>
+      <div class="fr">
+        <div class="f"><label>Contact Number</label><input id="v-contact" type="tel" placeholder="+27..."></div>
+        <div class="f"><label class="req">Reason for Entry</label><input id="v-reason" placeholder="Purpose"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="chi" id="vTrTog" onclick="togTrailer('v')"><div class="chb" id="vTrBox"></div><div class="chl">Trailer attached?</div></div>
+      <div id="vTrF" class="tr-sec" style="display:none;margin-top:10px"><div class="f" style="margin:0"><label>Trailer Registration</label><input id="v-tr" class="plate" placeholder="Trailer Reg" oninput="this.value=this.value.toUpperCase()"></div></div>
+    </div>
+  </div>
+
+  <!-- COMPANY -->
+  <div id="form-company" style="display:none">
+    <div class="card">
+      <div class="ct">🏢 Company Vehicle Details</div>
+      <div class="f"><label class="req">Driver Name</label><input id="c-driver" placeholder="Full name"></div>
+      <div class="f"><label class="req">Reason / Destination</label><input id="c-reason" placeholder="Purpose"></div>
+      <div class="fr">
+        <div class="f"><label>Depot KM Out</label><input id="c-kmout" type="number" placeholder="e.g. 125400"></div>
+        <div class="f"><label>Depot KM In</label><input id="c-kmin" type="number" placeholder="Return KM"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="chi" id="cTrTog" onclick="togTrailer('c')"><div class="chb" id="cTrBox"></div><div class="chl">Trailer attached?</div></div>
+      <div id="cTrF" class="tr-sec" style="display:none;margin-top:10px"><div class="f" style="margin:0"><label>Trailer Registration</label><input id="c-tr" class="plate" placeholder="Trailer Reg" oninput="this.value=this.value.toUpperCase()"></div></div>
+    </div>
+  </div>
+
+  <!-- TRUCK STOP -->
+  <div id="form-truck" style="display:none">
+    <div class="card">
+      <div class="ct">🚛 Truck Stop Details</div>
+      <div class="f"><label class="req">Driver Name</label><input id="ts-driver" placeholder="Full name"></div>
+      <div class="f"><label class="req">Company / Transporter</label><input id="ts-company" placeholder="Company name"></div>
+      <div class="f"><label>Contact Number</label><input id="ts-contact" type="tel" placeholder="+27..."></div>
+    </div>
+    <div class="card">
+      <div class="chi" id="tsTrTog" onclick="togTrailer('ts')"><div class="chb" id="tsTrBox"></div><div class="chl">Trailer attached?</div></div>
+      <div id="tsTrF" class="tr-sec" style="display:none;margin-top:10px"><div class="f" style="margin:0"><label>Trailer Registration</label><input id="ts-tr" class="plate" placeholder="Trailer Reg" oninput="this.value=this.value.toUpperCase()"></div></div>
+    </div>
+    <div class="card">
+      <div class="ct">💳 Payment Status</div>
+      <div class="f"><label>Parking Fee</label>
+        <div class="prow"><div class="popt ppaid" id="pkPd" onclick="setPay('park','paid')">✓ Paid</div><div class="popt punpaid ou" id="pkUp" onclick="setPay('park','unpaid')">✗ Unpaid</div></div>
+      </div>
+      <div class="f"><label>Truck Wash</label>
+        <div class="prow"><div class="popt ppaid" id="wsPd" onclick="setPay('wash','paid')">✓ Paid</div><div class="popt punpaid ou" id="wsUp" onclick="setPay('wash','unpaid')">✗ Unpaid</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLEET -->
+  <div id="form-fleet" style="display:none">
+    <div class="card">
+      <div class="ct">⚙️ Fleet Equipment Details</div>
+      <div class="f"><label class="req">Driver Name</label><input id="fl-driver" placeholder="Full name"></div>
+      <div class="f"><label class="req">Operations Controller</label><input id="fl-ops" placeholder="Controller name"></div>
+      <div class="fr">
+        <div class="f"><label class="req">Fleet Number</label><input id="fl-fnum" placeholder="Fleet #"></div>
+        <div class="f"><label>Trailer Number</label><input id="fl-tnum" placeholder="Trailer #"></div>
+      </div>
+      <div class="f"><label class="req">Truck KM Reading</label><input id="fl-km" type="number" placeholder="Current KM"></div>
+    </div>
+    <div class="card">
+      <div class="ct">📦 Equipment Checklist</div>
+      <div class="chklist">
+        <div class="chi" onclick="togChk(this,'17m Tarp')"><div class="chb"></div><div class="chl">17m Tarp</div></div>
+        <div class="chi" onclick="togChk(this,'17m Top')"><div class="chb"></div><div class="chl">17m Top</div></div>
+        <div class="chi" onclick="togChk(this,'11m Tarp')"><div class="chb"></div><div class="chl">11m Tarp</div></div>
+        <div class="chi" onclick="togChk(this,'11m Top')"><div class="chb"></div><div class="chl">11m Top</div></div>
+        <div class="chi" onclick="togChk(this,'Spare')"><div class="chb"></div><div class="chl">Spare</div></div>
+        <div class="chi" onclick="togChk(this,'Corner Plates')">
+          <div class="chb"></div><div class="chl">Corner Plates</div>
+          <div class="chc"><input type="number" id="cnt-cnr" placeholder="x18" min="0" max="99" onclick="event.stopPropagation()"></div>
+        </div>
+        <div class="chi" onclick="togChk(this,'Uprights')">
+          <div class="chb"></div><div class="chl">Uprights</div>
+          <div class="chc"><input type="number" id="cnt-upr" placeholder="x28" min="0" max="99" onclick="event.stopPropagation()"></div>
+        </div>
+        <div class="chi" onclick="togChk(this,'Dunnages')">
+          <div class="chb"></div><div class="chl">Dunnages</div>
+          <div class="chc"><input type="number" id="cnt-dun" placeholder="x10" min="0" max="99" onclick="event.stopPropagation()"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTES + EXTRA PHOTOS -->
+  <div class="card">
+    <div class="ct">📝 Notes & Extra Photos</div>
+    <div class="f"><label>Notes</label><textarea id="notes" placeholder="Additional observations..."></textarea></div>
+    <div class="f">
+      <label>Extra photos (trailer, cargo, damage, ID)</label>
+      <div class="pstrip" id="extraStrip"></div>
+      <input type="file" id="extraFile" accept="image/*" capture="environment" onchange="addPhoto(event,'extra')">
+    </div>
+  </div>
+
+  <button class="subbtn" id="subbtn" onclick="submitEntry()">
+    <svg width="18" height="18" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    RECORD BOOK IN
+  </button>
+</div>
+
+<!-- ===== LOG ===== -->
+<div id="pg-log" class="pg">
+  <input class="lsearch" type="search" placeholder="Search plate, name, company..." oninput="renderLog(this.value)" id="logSearch">
+  <div class="lfrow">
+    <div class="pill on" onclick="setFilt(this,'all')">All</div>
+    <div class="pill" onclick="setFilt(this,'visitor')">Visitor</div>
+    <div class="pill" onclick="setFilt(this,'company')">Company</div>
+    <div class="pill" onclick="setFilt(this,'truck')">Truck Stop</div>
+    <div class="pill" onclick="setFilt(this,'fleet')">Fleet</div>
+    <div class="pill" onclick="setFilt(this,'in')">In Only</div>
+    <div class="pill" onclick="setFilt(this,'out')">Out Only</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+    <div style="font-size:11px;color:#aaa;flex:1" id="logCount"></div>
+    <button class="share-btn" onclick="shareLog()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.498 14.382c-.301-.09-.663-.184-1.002-.226a7.962 7.962 0 0 0-1.5 0 7.862 7.862 0 0 0-1.501.226c-.3.091-.553.208-.77.352L11 14.09a9.927 9.927 0 0 1 2.497-.617 9.896 9.896 0 0 1 1.506 0A9.928 9.928 0 0 1 17.5 14.09l-1.228.644c-.214-.144-.467-.261-.774-.352zm-4.498-6.93a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-1.293l4.146 4.146a.5.5 0 0 1-.707.708L14.5 8.66V9.95a.5.5 0 0 1-1 0v-2.5zm-5 0v2.5a.5.5 0 0 1-1 0V8.66L2.854 12.806a.5.5 0 0 1-.707-.708L6.293 7.952H5a.5.5 0 0 1 0-1h3a.5.5 0 0 1 .5.5zM12 21.5C6.201 21.5 1.5 16.799 1.5 11S6.201.5 12 .5 22.5 5.201 22.5 11 17.799 21.5 12 21.5zm0-1C17.247 20.5 21.5 16.247 21.5 11S17.247 1.5 12 1.5 2.5 5.753 2.5 11 6.753 20.5 12 20.5z"/></svg>
+      WhatsApp
+    </button>
+    <button class="exp-btn" onclick="showExport()">
+      <svg width="14" height="14" fill="none" stroke="white" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      CSV
+    </button>
+  </div>
+  <div id="logList"></div>
+</div>
+
+<!-- ===== YARD ===== -->
+<div id="pg-yard" class="pg">
+  <div class="card" style="background:var(--al);border-color:rgba(186,117,23,.3);margin-bottom:12px">
+    <div style="font-size:13px;font-weight:700;color:var(--am);margin-bottom:2px">🏭 Currently In Yard</div>
+    <div style="font-size:11px;color:#888">Booked in, not yet out. Tap truck to update payments.</div>
+  </div>
+  <div id="yardList"></div>
+</div>
+
+<!-- ===== STATS ===== -->
+<div id="pg-stats" class="pg">
+  <div class="sgrid">
+    <div class="sc"><div class="sn" id="s0">0</div><div class="sl">Today's entries</div></div>
+    <div class="sc"><div class="sn" id="s1">0</div><div class="sl">Total recorded</div></div>
+    <div class="sc"><div class="sn" id="s2">0</div><div class="sl">In yard now</div></div>
+    <div class="sc"><div class="sn" id="s3">0</div><div class="sl">Photos taken</div></div>
+  </div>
+  <div class="card"><div class="ct">By Entry Type</div><div id="typechart"></div></div>
+  <div class="card" style="margin-top:10px"><div class="ct">Recent Activity</div><div id="recact"></div></div>
+</div>
+
+</div><!-- /app -->
+
+<!-- DETAIL MODAL -->
+<div class="mbg hide" id="detMod" onclick="if(event.target===this)closeDet()">
+  <div class="modal"><div class="mh"></div><div id="detInner"></div></div>
+</div>
+
+<!-- PAY MODAL -->
+<div class="mbg hide" id="payMod" onclick="if(event.target===this)closePay()">
+  <div class="modal"><div class="mh"></div><div id="payInner"></div></div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="mbg hide" id="expMod" onclick="if(event.target===this)closeExport()">
+  <div class="modal">
+    <div class="mh"></div>
+    <div class="mt">Export CSV</div>
+    <div class="ms">Filter then download</div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:6px">Entry Type</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px" id="expTF">
+        <div class="pill on" onclick="setExpF(this,'type','all')">All</div>
+        <div class="pill" onclick="setExpF(this,'type','visitor')">Visitor</div>
+        <div class="pill" onclick="setExpF(this,'type','company')">Company</div>
+        <div class="pill" onclick="setExpF(this,'type','truck')">Truck Stop</div>
+        <div class="pill" onclick="setExpF(this,'type','fleet')">Fleet</div>
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:6px">Date Range</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px" id="expDF">
+        <div class="pill on" onclick="setExpF(this,'date','all')">All Time</div>
+        <div class="pill" onclick="setExpF(this,'date','today')">Today</div>
+        <div class="pill" onclick="setExpF(this,'date','week')">This Week</div>
+        <div class="pill" onclick="setExpF(this,'date','month')">This Month</div>
+        <div class="pill" onclick="setExpF(this,'date','custom')">Custom</div>
+      </div>
+      <div id="custDR" style="display:none;margin-top:8px;display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="f" style="margin:0"><label>From</label><input type="date" id="expFrom"></div>
+          <div class="f" style="margin:0"><label>To</label><input type="date" id="expTo"></div>
+        </div>
+      </div>
+    </div>
+    <div id="expPrev" style="background:#f5f5f3;border-radius:var(--rs);padding:9px 12px;font-size:12px;color:#888;text-align:center;margin-bottom:12px"></div>
+    <button onclick="doCSV()" style="width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">⬇ Download CSV</button>
+    <button class="cbtn" onclick="closeExport()">Cancel</button>
+  </div>
+</div>
+
+<!-- AUTO INSTALL BANNER (Chrome Android) -->
+<div id="installBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;padding:12px 14px;background:#0f6e56;color:#fff;align-items:center;gap:10px;box-shadow:0 -2px 12px rgba(0,0,0,.2)">
+  <div style="font-size:22px">📲</div>
+  <div style="flex:1">
+    <div style="font-size:13px;font-weight:700">Install Gate Control</div>
+    <div style="font-size:11px;opacity:.8">Add to home screen for quick access</div>
+  </div>
+  <button onclick="doInstall()" style="background:#fff;color:#0f6e56;border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer">Install</button>
+  <button onclick="document.getElementById('installBanner').style.display='none'" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:7px;padding:8px 10px;font-size:12px;cursor:pointer">✕</button>
+</div>
+
+<!-- MANUAL INSTALL GUIDE -->
+<div id="manualInstallBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;padding:12px 14px;background:#185fa5;color:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.2)">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+    <div style="font-size:18px">📲</div>
+    <div style="flex:1;font-size:13px;font-weight:700">Add to Home Screen</div>
+    <button onclick="dismissInstallGuide()" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:12px;cursor:pointer">✕ Close</button>
+  </div>
+  <div id="installGuideText" style="font-size:12px;line-height:1.7;opacity:.95;background:rgba(0,0,0,.15);padding:8px 10px;border-radius:6px"></div>
+</div>
+
+<div class="flash" id="flash"></div>
+
+<!-- EDIT MODAL -->
+<div class="mbg hide" id="editMod" onclick="if(event.target===this)closeEdit()">
+  <div class="modal" id="editModalBody">
+    <div class="mh"></div>
+    <div class="mt">Edit Entry</div>
+    <div class="ms" id="editSubtitle"></div>
+    <div id="editInner"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+let DB = [];
+try { DB = JSON.parse(localStorage.getItem('gac3') || '[]'); } catch(e) {}
+function save() { try { localStorage.setItem('gac3', JSON.stringify(DB.slice(-600))); } catch(e) {} }
+
+let curType = 'visitor', curIO = 'in';
+let mainPhotos = [], extraPhotos = [];
+let trTog = {v:false, c:false, ts:false};
+let parkPay = 'unpaid', washPay = 'unpaid';
+let chklist = {};
+let logFilt = 'all';
+let expFilt = {type:'all', date:'all'};
+let editYardId = null;
+
+const TL = {visitor:'Visitor', company:'Company Vehicle', truck:'Truck Stop', fleet:'Fleet Equipment'};
+const TI = {visitor:'👤', company:'🏢', truck:'🚛', fleet:'⚙️'};
+const BC = {visitor:'bv', company:'bc', truck:'bt', fleet:'bf'};
+
+// ═══════════════════════════════════════════════
+//  CLOCK
+// ═══════════════════════════════════════════════
+function tick() {
+  const n = new Date();
+  document.getElementById('clk').textContent =
+    n.toLocaleDateString('en-ZA',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}) + '  ' +
+    n.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(tick, 1000); tick();
+
+// ═══════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════
+function goTab(t) {
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('on', ['new','log','yard','stats'][i] === t));
+  document.querySelectorAll('.pg').forEach(el => el.classList.remove('on'));
+  document.getElementById('pg-'+t).classList.add('on');
+  if (t === 'log') renderLog('');
+  if (t === 'yard') renderYard();
+  if (t === 'stats') renderStats();
+}
+
+// ═══════════════════════════════════════════════
+//  IN / OUT
+// ═══════════════════════════════════════════════
+function setIO(v) {
+  curIO = v;
+  document.getElementById('ioIn').classList.toggle('on', v==='in');
+  document.getElementById('ioOut').classList.toggle('on', v==='out');
+  const b = document.getElementById('subbtn');
+  b.className = 'subbtn' + (v==='out' ? ' out' : '');
+  b.innerHTML = (v==='in'
+    ? '<svg width="18" height="18" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> RECORD BOOK IN'
+    : '<svg width="18" height="18" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> RECORD BOOK OUT');
+  checkYard();
+}
+
+// ═══════════════════════════════════════════════
+//  TYPE
+// ═══════════════════════════════════════════════
+function setType(t) {
+  curType = t;
+  ['visitor','company','truck','fleet'].forEach(x => {
+    document.getElementById('t-'+x).classList.toggle('on', x===t);
+    document.getElementById('form-'+x).style.display = x===t ? '' : 'none';
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  TRAILER TOGGLE
+// ═══════════════════════════════════════════════
+function togTrailer(p) {
+  trTog[p] = !trTog[p];
+  const on = trTog[p];
+  const box = document.getElementById(p+'TrBox');
+  box.style.background = on ? 'var(--g)' : '';
+  box.style.borderColor = on ? 'var(--g)' : '#ccc';
+  box.innerHTML = on ? chkSVG() : '';
+  document.getElementById(p+'TrTog').classList.toggle('on', on);
+  document.getElementById(p+'TrF').style.display = on ? '' : 'none';
+}
+function chkSVG() { return '<svg width="12" height="12" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'; }
+
+// ═══════════════════════════════════════════════
+//  PAYMENT
+// ═══════════════════════════════════════════════
+function setPay(which, state) {
+  if (which==='park') parkPay=state; else washPay=state;
+  const pd = which==='park' ? 'pkPd' : 'wsPd';
+  const up = which==='park' ? 'pkUp' : 'wsUp';
+  document.getElementById(pd).className = 'popt ppaid' + (state==='paid' ? ' op' : '');
+  document.getElementById(up).className = 'popt punpaid' + (state==='unpaid' ? ' ou' : '');
+}
+
+// ═══════════════════════════════════════════════
+//  CHECKLIST
+// ═══════════════════════════════════════════════
+function togChk(el, name) {
+  const on = el.classList.toggle('on');
+  const box = el.querySelector('.chb');
+  box.style.background = on ? 'var(--g)' : '';
+  box.style.borderColor = on ? 'var(--g)' : '#ccc';
+  box.innerHTML = on ? chkSVG() : '';
+  if (on) chklist[name] = true; else delete chklist[name];
+}
+
+// ═══════════════════════════════════════════════
+//  PHOTOS
+// ═══════════════════════════════════════════════
+function addPhoto(e, t) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    if (t==='main') { mainPhotos.push(ev.target.result); drawStrip('mainStrip', mainPhotos, 'main'); }
+    else { extraPhotos.push(ev.target.result); drawStrip('extraStrip', extraPhotos, 'extra'); }
+  };
+  r.readAsDataURL(f); e.target.value='';
+}
+function drawStrip(id, arr, t) {
+  const el = document.getElementById(id); if (!el) return; el.innerHTML='';
+  arr.forEach((p,i) => {
+    const img = document.createElement('img'); img.src=p; img.className='pthumb';
+    img.onclick = () => { if(confirm('Remove photo?')) { arr.splice(i,1); drawStrip(id,arr,t); } };
+    el.appendChild(img);
+  });
+  const a = document.createElement('div'); a.className='padd';
+  a.onclick = () => document.getElementById(t==='main'?'mainFile':'extraFile').click();
+  a.innerHTML = '<svg width="20" height="20" fill="none" stroke="#bbb" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Add</span>';
+  el.appendChild(a);
+}
+
+// ═══════════════════════════════════════════════
+//  YARD CHECK
+// ═══════════════════════════════════════════════
+function checkYard() {
+  const plate = (document.getElementById('reg').value||'').toUpperCase().trim();
+  const al = document.getElementById('yalert');
+  if (!plate) { al.style.display='none'; return; }
+  const found = DB.find(e => e.plate===plate && e.timeIn && !e.bookedOut);
+  if (found && curIO==='out') {
+    const hrs = Math.round((Date.now()-new Date(found.timeIn).getTime())/3600000);
+    document.getElementById('yalertMsg').textContent = `In yard for ${hrs}h (${found.driver||'unknown'}). Recording book-out.`;
+    al.style.display='flex';
+  } else al.style.display='none';
+}
+
+// ═══════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════
+function gv(id) { const el=document.getElementById(id); return el ? el.value.trim() : ''; }
+function fDT(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'}) + ' ' +
+         d.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
+}
+function dAgo(iso) { return iso ? Math.floor((Date.now()-new Date(iso).getTime())/86400000) : 0; }
+function hAgo(iso) { return iso ? Math.round((Date.now()-new Date(iso).getTime())/3600000) : 0; }
+function flash(msg) {
+  const f=document.getElementById('flash'); f.textContent=msg; f.classList.add('on');
+  setTimeout(()=>f.classList.remove('on'),2400);
+}
+
+// ═══════════════════════════════════════════════
+//  SUBMIT
+// ═══════════════════════════════════════════════
+function submitEntry() {
+  const plate = gv('reg').toUpperCase();
+  if (!plate) { flash('⚠ Enter a registration plate'); return; }
+  const guard = gv('guardName');
+  if (!guard) { flash('⚠ Enter guard name'); return; }
+
+  const now = new Date();
+
+  // BOOK OUT — update existing record
+  if (curIO === 'out') {
+    const prev = DB.find(e => e.plate===plate && e.timeIn && !e.bookedOut);
+    if (prev) {
+      prev.bookedOut = true;
+      prev.timeOut = now.toISOString();
+      prev.guardOut = guard;
+      prev.photos = [...(prev.photos||[]), ...mainPhotos];
+      prev.extraPhotos = [...(prev.extraPhotos||[]), ...extraPhotos];
+      if (gv('notes')) prev.notesOut = gv('notes');
+      save(); flash('✓ Book-out recorded — '+plate); resetForm(); return;
+    }
+  }
+
+  // NEW ENTRY
+  const entry = {
+    id: Date.now(), plate, type: curType, io: curIO,
+    timeIn: curIO==='in' ? now.toISOString() : null,
+    timeOut: curIO==='out' ? now.toISOString() : null,
+    bookedOut: curIO==='out',
+    guard, photos:[...mainPhotos], extraPhotos:[...extraPhotos], notes: gv('notes')
+  };
+
+  if (curType==='visitor') {
+    const nm=gv('v-name'); if(!nm){flash('⚠ Enter visitor name');return;}
+    entry.driver=nm; entry.company=gv('v-company'); entry.contact=gv('v-contact'); entry.reason=gv('v-reason');
+    if (trTog.v) entry.trailerReg=gv('v-tr').toUpperCase();
+  }
+  if (curType==='company') {
+    const nm=gv('c-driver'); if(!nm){flash('⚠ Enter driver name');return;}
+    entry.driver=nm; entry.reason=gv('c-reason'); entry.kmOut=gv('c-kmout'); entry.kmIn=gv('c-kmin');
+    if (trTog.c) entry.trailerReg=gv('c-tr').toUpperCase();
+  }
+  if (curType==='truck') {
+    const nm=gv('ts-driver'); if(!nm){flash('⚠ Enter driver name');return;}
+    entry.driver=nm; entry.company=gv('ts-company'); entry.contact=gv('ts-contact');
+    entry.parkPay=parkPay; entry.washPay=washPay;
+    if (trTog.ts) entry.trailerReg=gv('ts-tr').toUpperCase();
+  }
+  if (curType==='fleet') {
+    const nm=gv('fl-driver'); if(!nm){flash('⚠ Enter driver name');return;}
+    entry.driver=nm; entry.opsController=gv('fl-ops');
+    entry.fleetNum=gv('fl-fnum'); entry.trailerNum=gv('fl-tnum'); entry.km=gv('fl-km');
+    entry.checklist={...chklist};
+    entry.counts={cnr:gv('cnt-cnr'), upr:gv('cnt-upr'), dun:gv('cnt-dun')};
+  }
+
+  DB.unshift(entry); save();
+  flash('✓ Entry recorded — '+plate); resetForm();
+}
+
+// ═══════════════════════════════════════════════
+//  RESET
+// ═══════════════════════════════════════════════
+function resetForm() {
+  ['reg','guardName','v-name','v-company','v-contact','v-reason','v-tr',
+   'c-driver','c-reason','c-kmout','c-kmin','c-tr',
+   'ts-driver','ts-company','ts-contact','ts-tr',
+   'fl-driver','fl-ops','fl-fnum','fl-tnum','fl-km',
+   'cnt-cnr','cnt-upr','cnt-dun','notes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  mainPhotos=[]; extraPhotos=[];
+  drawStrip('mainStrip',mainPhotos,'main'); drawStrip('extraStrip',extraPhotos,'extra');
+  trTog={v:false,c:false,ts:false};
+  ['v','c','ts'].forEach(p=>{
+    ['TrBox','TrF','TrTog'].forEach(s=>{
+      const el=document.getElementById(p+s);
+      if(!el)return;
+      if(s==='TrBox'){el.style.background='';el.style.borderColor='#ccc';el.innerHTML='';}
+      if(s==='TrF')el.style.display='none';
+      if(s==='TrTog')el.classList.remove('on');
+    });
+  });
+  chklist={};
+  document.querySelectorAll('.chi.on').forEach(el=>{
+    el.classList.remove('on');const b=el.querySelector('.chb');
+    if(b){b.style.background='';b.style.borderColor='#ccc';b.innerHTML='';}
+  });
+  parkPay='unpaid'; washPay='unpaid';
+  setPay('park','unpaid'); setPay('wash','unpaid');
+  document.getElementById('yalert').style.display='none';
+}
+
+// ═══════════════════════════════════════════════
+//  LOG
+// ═══════════════════════════════════════════════
+function setFilt(el, f) {
+  document.querySelectorAll('.lfrow .pill').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on'); logFilt=f;
+  renderLog(document.getElementById('logSearch').value||'');
+}
+function renderLog(q='') {
+  let data=[...DB];
+  if(logFilt==='in') data=data.filter(e=>e.timeIn&&!e.bookedOut);
+  else if(logFilt==='out') data=data.filter(e=>e.bookedOut);
+  else if(logFilt!=='all') data=data.filter(e=>e.type===logFilt);
+  if(q) data=data.filter(e=>(e.plate+e.driver+e.company+'').toLowerCase().includes(q.toLowerCase()));
+  const cnt=document.getElementById('logCount');
+  if(cnt) cnt.textContent=data.length+' record'+(data.length!==1?'s':'');
+  const list=document.getElementById('logList');
+  if(!data.length){list.innerHTML='<div class="empty">No entries found</div>';return;}
+  list.innerHTML=data.map(e=>{
+    const inYard=e.timeIn&&!e.bookedOut;
+    const th=e.photos&&e.photos.length?`<div class="lthumb"><img src="${e.photos[0]}"></div>`:`<div class="lthumb">${TI[e.type]||'🚗'}</div>`;
+    const days=dAgo(e.timeIn);
+    // Timestamps row - always show both book-in and book-out
+    const tsIn = e.timeIn
+      ? `<span class="ts-chip ts-in">⬇ IN: ${fDT(e.timeIn)}</span>`
+      : `<span class="ts-chip ts-pending">⬇ IN: —</span>`;
+    const tsOut = e.bookedOut && e.timeOut
+      ? `<span class="ts-chip ts-out">⬆ OUT: ${fDT(e.timeOut)}</span>`
+      : `<span class="ts-chip ts-pending">⬆ OUT: pending</span>`;
+    return `<div class="lcard" onclick="openDet(${e.id})">
+      <div class="ltop">
+        ${th}
+        <div class="linfo">
+          <div class="lplate">${e.plate}</div>
+          <div class="lname">${e.driver||''}${e.company&&e.type!=='visitor'?' · '+e.company:e.company&&e.type==='visitor'?' · '+e.company:''}</div>
+          <div class="lbadges">
+            <span class="bdg ${BC[e.type]||'bv'}">${TL[e.type]}</span>
+            ${inYard?'<span class="bdg byard">In Yard</span>':''}
+            ${e.type==='truck'&&e.parkPay==='paid'?'<span class="bdg bpaid">Parking ✓</span>':''}
+            ${e.type==='truck'&&e.parkPay!=='paid'&&inYard?'<span class="bdg bunpaid">Parking ✗</span>':''}
+            ${inYard&&days>0?`<span class="bdg" style="background:#faeeda;color:#ba7517">⏱ ${days}d</span>`:''}
+          </div>
+        </div>
+        <div class="ltime">${e.guard||''}</div>
+      </div>
+      <div class="lbottom">${tsIn}${tsOut}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+//  DETAIL MODAL
+// ═══════════════════════════════════════════════
+function openDet(id) {
+  const e=DB.find(x=>x.id===id); if(!e) return;
+  const allP=[...(e.photos||[]),...(e.extraPhotos||[])];
+  const inYard=e.timeIn&&!e.bookedOut;
+  let ex='';
+  if(e.type==='visitor') ex=`
+    <div class="ir"><span class="lb">Company</span><span class="vl">${e.company||'—'}</span></div>
+    <div class="ir"><span class="lb">Contact</span><span class="vl">${e.contact||'—'}</span></div>
+    <div class="ir"><span class="lb">Reason</span><span class="vl">${e.reason||'—'}</span></div>`;
+  if(e.type==='company') ex=`
+    <div class="ir"><span class="lb">Reason</span><span class="vl">${e.reason||'—'}</span></div>
+    <div class="ir"><span class="lb">KM Out</span><span class="vl">${e.kmOut||'—'}</span></div>
+    <div class="ir"><span class="lb">KM In</span><span class="vl">${e.kmIn||'—'}</span></div>`;
+  if(e.type==='truck') ex=`
+    <div class="ir"><span class="lb">Company</span><span class="vl">${e.company||'—'}</span></div>
+    <div class="ir"><span class="lb">Contact</span><span class="vl">${e.contact||'—'}</span></div>
+    <div class="ir"><span class="lb">Parking</span><span class="vl">${e.parkPay==='paid'?'✓ Paid':'✗ Unpaid'}</span></div>
+    <div class="ir"><span class="lb">Wash</span><span class="vl">${e.washPay==='paid'?'✓ Paid':'✗ Unpaid'}</span></div>`;
+  if(e.type==='fleet'){
+    const ck=Object.keys(e.checklist||{}).join(', ')||'None';
+    const c=e.counts||{};
+    ex=`
+    <div class="ir"><span class="lb">Ops Controller</span><span class="vl">${e.opsController||'—'}</span></div>
+    <div class="ir"><span class="lb">Fleet #</span><span class="vl">${e.fleetNum||'—'}</span></div>
+    <div class="ir"><span class="lb">Trailer #</span><span class="vl">${e.trailerNum||'—'}</span></div>
+    <div class="ir"><span class="lb">KM Reading</span><span class="vl">${e.km||'—'}</span></div>
+    <div class="ir"><span class="lb">Equipment</span><span class="vl">${ck}</span></div>
+    ${c.cnr?`<div class="ir"><span class="lb">Corner Plates</span><span class="vl">${c.cnr}</span></div>`:''}
+    ${c.upr?`<div class="ir"><span class="lb">Uprights</span><span class="vl">${c.upr}</span></div>`:''}
+    ${c.dun?`<div class="ir"><span class="lb">Dunnages</span><span class="vl">${c.dun}</span></div>`:''}`;
+  }
+  document.getElementById('detInner').innerHTML=`
+    <div class="mt">${e.plate}</div>
+    <div class="ms">${TI[e.type]} ${TL[e.type]} · ${inYard?'Currently In Yard':e.bookedOut?'Booked Out':'—'}</div>
+    ${allP.length?`<div class="mphotos">${allP.map(p=>`<img src="${p}">`).join('')}</div>`:''}
+    <div class="msec">Entry Details</div>
+    <div class="ir"><span class="lb">Driver / Name</span><span class="vl">${e.driver||'—'}</span></div>
+    ${ex}
+    ${e.trailerReg?`<div class="ir"><span class="lb">Trailer Reg</span><span class="vl">${e.trailerReg}</span></div>`:''}
+    ${e.notes?`<div class="ir"><span class="lb">Notes (In)</span><span class="vl">${e.notes}</span></div>`:''}
+    ${e.notesOut?`<div class="ir"><span class="lb">Notes (Out)</span><span class="vl">${e.notesOut}</span></div>`:''}
+    <div class="msec">Timestamps</div>
+    <div class="ir"><span class="lb">⬇ Book In</span><span class="vl" style="color:var(--g)">${fDT(e.timeIn)}</span></div>
+    <div class="ir"><span class="lb">⬆ Book Out</span><span class="vl" style="color:${e.bookedOut?'var(--rd)':'#bbb'}">${fDT(e.timeOut)}</span></div>
+    ${inYard?`<div class="ir"><span class="lb">Time in Yard</span><span class="vl" style="color:var(--am)">${dAgo(e.timeIn)>0?dAgo(e.timeIn)+'d ':''}${hAgo(e.timeIn)%24}h</span></div>`:''}
+    <div class="msec">Guard Info</div>
+    <div class="ir"><span class="lb">Guard In</span><span class="vl">${e.guard||'—'}</span></div>
+    <div class="ir"><span class="lb">Guard Out</span><span class="vl">${e.guardOut||'—'}</span></div>
+    <div class="ir"><span class="lb">Photos</span><span class="vl">${allP.length}</span></div>
+    <div class="act-row">
+      <button class="act-edit" onclick="closeDet();openEdit(${e.id})">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit Entry
+      </button>
+      <button class="act-del" onclick="deleteEntry(${e.id})">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        Delete
+      </button>
+    </div>
+    <button class="cbtn" onclick="closeDet()">Close</button>`;
+  document.getElementById('detMod').classList.remove('hide');
+}
+function closeDet() { document.getElementById('detMod').classList.add('hide'); }
+
+// ═══════════════════════════════════════════════
+//  DELETE
+// ═══════════════════════════════════════════════
+function deleteEntry(id) {
+  const e = DB.find(x=>x.id===id); if(!e) return;
+  if (!confirm(`Delete entry for ${e.plate}?\n\nThis cannot be undone.`)) return;
+  DB = DB.filter(x=>x.id!==id);
+  save();
+  closeDet();
+  flash('🗑 Entry deleted — '+e.plate);
+  renderLog(document.getElementById('logSearch')?document.getElementById('logSearch').value||'':'');
+}
+
+// ═══════════════════════════════════════════════
+//  EDIT
+// ═══════════════════════════════════════════════
+let editId = null;
+let editChklist = {};
+let editParkPay = 'unpaid', editWashPay = 'unpaid';
+
+function eChkSVG(){return '<svg width="12" height="12" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';}
+
+function openEdit(id) {
+  const e = DB.find(x=>x.id===id); if(!e) return;
+  editId = id;
+  editChklist = {...(e.checklist||{})};
+  editParkPay = e.parkPay||'unpaid';
+  editWashPay = e.washPay||'unpaid';
+
+  document.getElementById('editSubtitle').textContent = TI[e.type]+' '+TL[e.type]+' · '+e.plate;
+
+  // Build type-specific fields
+  let typeFields = '';
+  if(e.type==='visitor') typeFields=`
+    <div class="f"><label class="req">Driver / Visitor Name</label><input id="e-driver" value="${esc(e.driver)}"></div>
+    <div class="f"><label>Company</label><input id="e-company" value="${esc(e.company)}"></div>
+    <div class="fr">
+      <div class="f"><label>Contact</label><input id="e-contact" value="${esc(e.contact)}"></div>
+      <div class="f"><label>Reason</label><input id="e-reason" value="${esc(e.reason)}"></div>
+    </div>
+    <div class="f"><label>Trailer Reg</label><input id="e-tr" class="plate" value="${esc(e.trailerReg)}" oninput="this.value=this.value.toUpperCase()"></div>`;
+
+  if(e.type==='company') typeFields=`
+    <div class="f"><label class="req">Driver Name</label><input id="e-driver" value="${esc(e.driver)}"></div>
+    <div class="f"><label>Reason / Destination</label><input id="e-reason" value="${esc(e.reason)}"></div>
+    <div class="fr">
+      <div class="f"><label>KM Out</label><input id="e-kmout" type="number" value="${esc(e.kmOut)}"></div>
+      <div class="f"><label>KM In</label><input id="e-kmin" type="number" value="${esc(e.kmIn)}"></div>
+    </div>
+    <div class="f"><label>Trailer Reg</label><input id="e-tr" class="plate" value="${esc(e.trailerReg)}" oninput="this.value=this.value.toUpperCase()"></div>`;
+
+  if(e.type==='truck') typeFields=`
+    <div class="f"><label class="req">Driver Name</label><input id="e-driver" value="${esc(e.driver)}"></div>
+    <div class="f"><label>Company</label><input id="e-company" value="${esc(e.company)}"></div>
+    <div class="f"><label>Contact</label><input id="e-contact" value="${esc(e.contact)}"></div>
+    <div class="f"><label>Trailer Reg</label><input id="e-tr" class="plate" value="${esc(e.trailerReg)}" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="esec">💳 Payment Status</div>
+    <div class="f"><label>Parking Fee</label>
+      <div class="prow">
+        <div class="popt ppaid ${editParkPay==='paid'?'op':''}" id="ep-pkPd" onclick="setEditPay('park','paid')">✓ Paid</div>
+        <div class="popt punpaid ${editParkPay==='unpaid'?'ou':''}" id="ep-pkUp" onclick="setEditPay('park','unpaid')">✗ Unpaid</div>
+      </div>
+    </div>
+    <div class="f"><label>Truck Wash</label>
+      <div class="prow">
+        <div class="popt ppaid ${editWashPay==='paid'?'op':''}" id="ep-wsPd" onclick="setEditPay('wash','paid')">✓ Paid</div>
+        <div class="popt punpaid ${editWashPay==='unpaid'?'ou':''}" id="ep-wsUp" onclick="setEditPay('wash','unpaid')">✗ Unpaid</div>
+      </div>
+    </div>`;
+
+  if(e.type==='fleet'){
+    const chkItems=['17m Tarp','17m Top','11m Tarp','11m Top','Spare','Corner Plates','Uprights','Dunnages'];
+    const cntMap={'Corner Plates':'e-cnr','Uprights':'e-upr','Dunnages':'e-dun'};
+    const cntDef={'Corner Plates':'x18','Uprights':'x28','Dunnages':'x10'};
+    const c=e.counts||{};
+    const chkHtml=chkItems.map(name=>{
+      const on=!!editChklist[name];
+      const cntId=cntMap[name];
+      const cntVal=cntId?({cnr:c.cnr,upr:c.upr,dun:c.dun}[cntId.replace('e-','')]||''):'';
+      return`<div class="chi${on?' on':''}" id="ech-${name.replace(/ /g,'_')}" onclick="togEditChk(this,'${name}')">
+        <div class="chb" style="background:${on?'var(--g)':''};border-color:${on?'var(--g)':'#ccc'}">${on?eChkSVG():''}</div>
+        <div class="chl">${name}</div>
+        ${cntId?`<div class="chc"><input type="number" id="${cntId}" placeholder="${cntDef[name]}" min="0" max="99" value="${esc(cntVal)}" onclick="event.stopPropagation()"></div>`:''}
+      </div>`;
+    }).join('');
+    typeFields=`
+    <div class="f"><label class="req">Driver Name</label><input id="e-driver" value="${esc(e.driver)}"></div>
+    <div class="f"><label>Ops Controller</label><input id="e-ops" value="${esc(e.opsController)}"></div>
+    <div class="fr">
+      <div class="f"><label>Fleet #</label><input id="e-fnum" value="${esc(e.fleetNum)}"></div>
+      <div class="f"><label>Trailer #</label><input id="e-tnum" value="${esc(e.trailerNum)}"></div>
+    </div>
+    <div class="f"><label>Truck KM</label><input id="e-km" type="number" value="${esc(e.km)}"></div>
+    <div class="esec">📦 Equipment Checklist</div>
+    <div class="chklist">${chkHtml}</div>`;
+  }
+
+  // Timestamps edit
+  const toDatetimeLocal = iso => {
+    if(!iso) return '';
+    const d=new Date(iso);
+    const pad=n=>String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
+
+  document.getElementById('editInner').innerHTML=`
+    <div class="esec">🚗 Vehicle & Guard</div>
+    <div class="f"><label class="req">Registration Plate</label><input id="e-plate" class="plate" value="${esc(e.plate)}" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="fr">
+      <div class="f"><label>Guard In</label><input id="e-guard" value="${esc(e.guard)}"></div>
+      <div class="f"><label>Guard Out</label><input id="e-guardout" value="${esc(e.guardOut)}"></div>
+    </div>
+    <div class="esec">${TI[e.type]} ${TL[e.type]} Details</div>
+    ${typeFields}
+    <div class="esec">📝 Notes</div>
+    <div class="f"><label>Notes (In)</label><textarea id="e-notes">${esc(e.notes)}</textarea></div>
+    <div class="f"><label>Notes (Out)</label><textarea id="e-notesout">${esc(e.notesOut)}</textarea></div>
+    <div class="esec">⏱ Timestamps</div>
+    <div class="f"><label>Book In Date & Time</label><input type="datetime-local" id="e-timein" value="${toDatetimeLocal(e.timeIn)}"></div>
+    <div class="f"><label>Book Out Date & Time</label><input type="datetime-local" id="e-timeout" value="${toDatetimeLocal(e.timeOut)}"></div>
+    <div class="f" style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#fafafa;border-radius:var(--rs);border:1px solid #eee;cursor:pointer" onclick="togEditOut(this)">
+      <div class="chb" id="e-bookedout-box" style="background:${e.bookedOut?'var(--g)':''};border-color:${e.bookedOut?'var(--g)':'#ccc'}">${e.bookedOut?eChkSVG():''}</div>
+      <div style="font-size:13px;font-weight:500">Marked as Booked Out</div>
+    </div>
+    <button class="esave" onclick="saveEdit()">
+      <svg width="16" height="16" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      Save Changes
+    </button>
+    <button class="cbtn" onclick="closeEdit()">Cancel</button>`;
+
+  document.getElementById('editMod').classList.remove('hide');
+}
+
+function esc(v){ return v ? String(v).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+
+function togEditChk(el, name) {
+  const on = el.classList.toggle('on');
+  const box = el.querySelector('.chb');
+  box.style.background = on ? 'var(--g)' : '';
+  box.style.borderColor = on ? 'var(--g)' : '#ccc';
+  box.innerHTML = on ? eChkSVG() : '';
+  if(on) editChklist[name]=true; else delete editChklist[name];
+}
+
+function setEditPay(which, state) {
+  if(which==='park') editParkPay=state; else editWashPay=state;
+  const pd='ep-'+(which==='park'?'pkPd':'wsPd');
+  const up='ep-'+(which==='park'?'pkUp':'wsUp');
+  document.getElementById(pd).className='popt ppaid'+(state==='paid'?' op':'');
+  document.getElementById(up).className='popt punpaid'+(state==='unpaid'?' ou':'');
+}
+
+let editBookedOut = null;
+function togEditOut(el) {
+  const box = document.getElementById('e-bookedout-box');
+  const e = DB.find(x=>x.id===editId);
+  editBookedOut = editBookedOut === null ? !e.bookedOut : !editBookedOut;
+  const on = editBookedOut;
+  box.style.background = on ? 'var(--g)' : '';
+  box.style.borderColor = on ? 'var(--g)' : '#ccc';
+  box.innerHTML = on ? eChkSVG() : '';
+}
+
+function gei(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+
+function saveEdit() {
+  const e = DB.find(x=>x.id===editId); if(!e) return;
+  const plate = gei('e-plate').toUpperCase();
+  if(!plate){flash('⚠ Plate cannot be empty');return;}
+
+  // Core fields
+  e.plate = plate;
+  e.guard = gei('e-guard') || e.guard;
+  e.guardOut = gei('e-guardout') || e.guardOut;
+  e.notes = gei('e-notes');
+  e.notesOut = gei('e-notesout');
+
+  // Timestamps
+  const tIn = gei('e-timein');
+  const tOut = gei('e-timeout');
+  if(tIn) e.timeIn = new Date(tIn).toISOString();
+  if(tOut) e.timeOut = new Date(tOut).toISOString();
+  if(editBookedOut !== null) e.bookedOut = editBookedOut;
+
+  // Type fields
+  if(e.type==='visitor'){
+    e.driver=gei('e-driver')||e.driver; e.company=gei('e-company'); e.contact=gei('e-contact'); e.reason=gei('e-reason');
+    const tr=gei('e-tr'); e.trailerReg=tr||'';
+  }
+  if(e.type==='company'){
+    e.driver=gei('e-driver')||e.driver; e.reason=gei('e-reason'); e.kmOut=gei('e-kmout'); e.kmIn=gei('e-kmin');
+    e.trailerReg=gei('e-tr')||'';
+  }
+  if(e.type==='truck'){
+    e.driver=gei('e-driver')||e.driver; e.company=gei('e-company'); e.contact=gei('e-contact');
+    e.trailerReg=gei('e-tr')||''; e.parkPay=editParkPay; e.washPay=editWashPay;
+  }
+  if(e.type==='fleet'){
+    e.driver=gei('e-driver')||e.driver; e.opsController=gei('e-ops');
+    e.fleetNum=gei('e-fnum'); e.trailerNum=gei('e-tnum'); e.km=gei('e-km');
+    e.checklist={...editChklist};
+    e.counts={cnr:gei('e-cnr'),upr:gei('e-upr'),dun:gei('e-dun')};
+  }
+
+  save();
+  editBookedOut = null;
+  closeEdit();
+  flash('✓ Entry updated — '+plate);
+  renderLog(document.getElementById('logSearch')?document.getElementById('logSearch').value||'':'');
+}
+
+function closeEdit() {
+  document.getElementById('editMod').classList.add('hide');
+  editBookedOut = null;
+}
+
+// ═══════════════════════════════════════════════
+//  YARD
+// ═══════════════════════════════════════════════
+function renderYard() {
+  const inY=DB.filter(e=>e.timeIn&&!e.bookedOut);
+  const list=document.getElementById('yardList');
+  if(!inY.length){list.innerHTML='<div class="empty">🎉 No vehicles in yard</div>';return;}
+  list.innerHTML=inY.map(e=>{
+    const d=dAgo(e.timeIn), h=hAgo(e.timeIn);
+    const dur=d>0?`${d}d ${h%24}h`:`${h}h`;
+    return`<div class="ycard" onclick="openYardPay(${e.id})">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:24px">${TI[e.type]}</span>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:800;font-family:monospace;letter-spacing:1.5px">${e.plate}${e.trailerReg?' + '+e.trailerReg:''}</div>
+          <div style="font-size:11px;color:#888">${e.driver||''}${e.company?' · '+e.company:''}</div>
+          <div style="font-size:11px;color:#aaa">In: ${fDT(e.timeIn)}</div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--am)">⏱ ${dur}</div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:7px">
+        ${e.type==='truck'?`<span class="bdg ${e.parkPay==='paid'?'bpaid':'bunpaid'}">Parking: ${e.parkPay==='paid'?'✓ Paid':'✗ Unpaid'}</span>`:''}
+        ${e.type==='truck'?`<span class="bdg ${e.washPay==='paid'?'bpaid':'bunpaid'}">Wash: ${e.washPay==='paid'?'✓ Paid':'✗ Unpaid'}</span>`:''}
+        ${e.type!=='truck'?`<span class="bdg bin">In Yard</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openYardPay(id) {
+  const e=DB.find(x=>x.id===id); if(!e) return;
+  if(e.type!=='truck'){openDet(id);return;}
+  editYardId=id;
+  document.getElementById('payInner').innerHTML=`
+    <div class="mt">${e.plate}</div>
+    <div class="ms">${e.driver||''} · ${fDT(e.timeIn)}</div>
+    <div class="msec">Parking Payment</div>
+    <div class="prow" style="margin-bottom:12px">
+      <div class="popt ppaid ${e.parkPay==='paid'?'op':''}" id="yp-pkPd" onclick="updYardPay('park','paid')">✓ Paid</div>
+      <div class="popt punpaid ${e.parkPay!=='paid'?'ou':''}" id="yp-pkUp" onclick="updYardPay('park','unpaid')">✗ Unpaid</div>
+    </div>
+    <div class="msec">Wash Payment</div>
+    <div class="prow" style="margin-bottom:14px">
+      <div class="popt ppaid ${e.washPay==='paid'?'op':''}" id="yp-wsPd" onclick="updYardPay('wash','paid')">✓ Paid</div>
+      <div class="popt punpaid ${e.washPay!=='paid'?'ou':''}" id="yp-wsUp" onclick="updYardPay('wash','unpaid')">✗ Unpaid</div>
+    </div>
+    <button class="cbtn" onclick="closePay()">Close</button>`;
+  document.getElementById('payMod').classList.remove('hide');
+}
+function updYardPay(which, state) {
+  const e=DB.find(x=>x.id===editYardId); if(!e) return;
+  if(which==='park') e.parkPay=state; else e.washPay=state;
+  save();
+  const pd='yp-'+(which==='park'?'pkPd':'wsPd');
+  const up='yp-'+(which==='park'?'pkUp':'wsUp');
+  document.getElementById(pd).className='popt ppaid'+(state==='paid'?' op':'');
+  document.getElementById(up).className='popt punpaid'+(state==='unpaid'?' ou':'');
+  flash('✓ Payment updated'); renderYard();
+}
+function closePay() { document.getElementById('payMod').classList.add('hide'); }
+
+// ═══════════════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════════════
+function renderStats() {
+  const today=new Date().toDateString();
+  const todayE=DB.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===today);
+  const inY=DB.filter(e=>e.timeIn&&!e.bookedOut);
+  const photos=DB.reduce((a,e)=>a+(e.photos||[]).length+(e.extraPhotos||[]).length,0);
+  document.getElementById('s0').textContent=todayE.length;
+  document.getElementById('s1').textContent=DB.length;
+  document.getElementById('s2').textContent=inY.length;
+  document.getElementById('s3').textContent=photos;
+  const counts={};
+  DB.forEach(e=>counts[e.type]=(counts[e.type]||0)+1);
+  const mx=Math.max(...Object.values(counts),1);
+  document.getElementById('typechart').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`
+    <div class="bar">
+      <div class="brt"><span>${TI[t]} ${TL[t]||t}</span><span style="font-weight:700">${c}</span></div>
+      <div class="brb"><div class="brf" style="width:${Math.round(c/mx*100)}%"></div></div>
+    </div>`).join('')||'<p style="color:#ccc;font-size:13px">No data yet</p>';
+
+  // Recent activity — show IN and OUT separately with direction
+  const recent=DB.slice(0,10);
+  document.getElementById('recact').innerHTML=recent.map(e=>{
+    const inYard=e.timeIn&&!e.bookedOut;
+    return`<div class="ra-item">
+      <span style="font-size:20px">${TI[e.type]}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:800;font-family:monospace">${e.plate}</div>
+        <div style="font-size:11px;color:#888">${TL[e.type]} · ${e.driver||'—'}</div>
+        <div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">
+          ${e.timeIn?`<span style="font-size:10px;background:#e1f5ee;color:#0f6e56;padding:2px 6px;border-radius:6px;font-weight:600">⬇ ${fDT(e.timeIn)}</span>`:''}
+          ${e.bookedOut&&e.timeOut?`<span style="font-size:10px;background:var(--rl);color:var(--rd);padding:2px 6px;border-radius:6px;font-weight:600">⬆ ${fDT(e.timeOut)}</span>`:''}
+          ${inYard?`<span style="font-size:10px;background:var(--al);color:var(--am);padding:2px 6px;border-radius:6px;font-weight:600">In Yard</span>`:''}
+        </div>
+      </div>
+      <div style="font-size:10px;color:#bbb">${e.guard||''}</div>
+    </div>`;
+  }).join('')||'<p style="color:#ccc;font-size:13px">No entries yet</p>';
+}
+
+// ═══════════════════════════════════════════════
+//  WHATSAPP SHARE
+// ═══════════════════════════════════════════════
+function shareLog() {
+  const today=new Date().toDateString();
+  const todayE=DB.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===today);
+  if(!todayE.length){flash('⚠ No entries today to share');return;}
+  let msg='*GATE LOG — '+new Date().toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'})+'*\n\n';
+  todayE.forEach(e=>{
+    msg+=`*${e.plate}* — ${TL[e.type]}\n`;
+    if(e.driver) msg+=`Driver: ${e.driver}\n`;
+    if(e.company) msg+=`Company: ${e.company}\n`;
+    if(e.timeIn) msg+=`⬇ In: ${fDT(e.timeIn)}\n`;
+    if(e.timeOut) msg+=`⬆ Out: ${fDT(e.timeOut)}\n`;
+    if(e.guard) msg+=`Guard: ${e.guard}\n`;
+    msg+='\n';
+  });
+  msg+=`_Total: ${todayE.length} entries_`;
+  const url='https://wa.me/?text='+encodeURIComponent(msg);
+  window.open(url,'_blank');
+}
+
+// ═══════════════════════════════════════════════
+//  CSV EXPORT
+// ═══════════════════════════════════════════════
+function showExport() {
+  expFilt={type:'all',date:'all'};
+  document.querySelectorAll('#expTF .pill').forEach((p,i)=>p.classList.toggle('on',i===0));
+  document.querySelectorAll('#expDF .pill').forEach((p,i)=>p.classList.toggle('on',i===0));
+  document.getElementById('custDR').style.display='none';
+  updExpPrev();
+  document.getElementById('expMod').classList.remove('hide');
+}
+function closeExport() { document.getElementById('expMod').classList.add('hide'); }
+function setExpF(el,which,val) {
+  expFilt[which]=val;
+  const grp=which==='type'?'expTF':'expDF';
+  document.querySelectorAll('#'+grp+' .pill').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  if(which==='date') document.getElementById('custDR').style.display=val==='custom'?'block':'none';
+  updExpPrev();
+}
+function getExpData() {
+  let data=[...DB];
+  if(expFilt.type!=='all') data=data.filter(e=>e.type===expFilt.type);
+  const now=new Date();
+  if(expFilt.date==='today'){const t=now.toDateString();data=data.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===t);}
+  else if(expFilt.date==='week'){const w=new Date(now);w.setDate(w.getDate()-7);data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)>=w);}
+  else if(expFilt.date==='month'){const m=new Date(now);m.setDate(1);m.setHours(0,0,0,0);data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)>=m);}
+  else if(expFilt.date==='custom'){
+    const f=document.getElementById('expFrom').value, t=document.getElementById('expTo').value;
+    if(f) data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)>=new Date(f));
+    if(t) data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)<=new Date(t+'T23:59:59'));
+  }
+  return data;
+}
+function updExpPrev(){const d=getExpData();document.getElementById('expPrev').innerHTML=`<strong>${d.length}</strong> record${d.length!==1?'s':''} will be exported`;}
+function ce(v){if(v===null||v===undefined)return'';const s=String(v).replace(/"/g,'""');return s.includes(',')||s.includes('"')||s.includes('\n')?`"${s}"`:s;}
+function doCSV() {
+  const data=getExpData();
+  if(!data.length){flash('⚠ No records');return;}
+  const hdrs=['ID','Type','Plate','Trailer Reg','Driver','Company','Contact','Reason','KM Out','KM In',
+    'Parking Pay','Wash Pay','Ops Controller','Fleet #','Trailer #','Truck KM','Equipment','Cnr Plates','Uprights','Dunnages',
+    'Book In Date','Book In Time','Book Out Date','Book Out Time','Time In Yard (hrs)','In Yard','Guard In','Guard Out','Notes','Photos'];
+  const rows=data.map(e=>{
+    const iDT=e.timeIn?new Date(e.timeIn):null;
+    const oDT=e.timeOut?new Date(e.timeOut):null;
+    const inY=e.timeIn&&!e.bookedOut;
+    const yh=iDT?Math.round((Date.now()-iDT.getTime())/3600000):'';
+    const ck=Object.keys(e.checklist||{}).join('; ');
+    const c=e.counts||{};
+    const ph=(e.photos||[]).length+(e.extraPhotos||[]).length;
+    return[e.id,TL[e.type]||e.type,e.plate,e.trailerReg||'',e.driver||'',e.company||'',e.contact||'',e.reason||'',
+      e.kmOut||'',e.kmIn||'',
+      e.type==='truck'?(e.parkPay==='paid'?'Paid':'Unpaid'):'',
+      e.type==='truck'?(e.washPay==='paid'?'Paid':'Unpaid'):'',
+      e.opsController||'',e.fleetNum||'',e.trailerNum||'',e.km||'',
+      ck,c.cnr||'',c.upr||'',c.dun||'',
+      iDT?iDT.toLocaleDateString('en-ZA'):'',iDT?iDT.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}):'',
+      oDT?oDT.toLocaleDateString('en-ZA'):'',oDT?oDT.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}):'',
+      inY?yh:'',inY?'Yes':'No',e.guard||'',e.guardOut||'',e.notes||'',ph
+    ].map(ce).join(',');
+  });
+  const csv='\uFEFF'+[hdrs.map(ce).join(','),...rows].join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='gate_log_'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  closeExport(); flash('✓ CSV downloaded');
+}
+
+// ═══════════════════════════════════════════════
+//  PWA INSTALL
+// ═══════════════════════════════════════════════
+let deferredPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isAndroid = /android/i.test(navigator.userAgent);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+const installDismissed = localStorage.getItem('gac_install_dismissed');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!isStandalone && !installDismissed) {
+    document.getElementById('installBanner').style.display = 'flex';
+  }
+});
+
+function doInstall() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(result => {
+    document.getElementById('installBanner').style.display = 'none';
+    if (result.outcome === 'accepted') flash('✓ App installed!');
+    deferredPrompt = null;
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').style.display = 'none';
+  deferredPrompt = null;
+});
+
+function dismissInstallGuide() {
+  document.getElementById('manualInstallBanner').style.display = 'none';
+  localStorage.setItem('gac_install_dismissed', '1');
+}
+
+// Show manual guide if not already installed and prompt didn't fire (iOS or file://)
+window.addEventListener('load', () => {
+  if (isStandalone || installDismissed) return;
+  setTimeout(() => {
+    if (deferredPrompt) return; // auto-prompt will handle it
+    const guide = document.getElementById('installGuideText');
+    const banner = document.getElementById('manualInstallBanner');
+    if (isIOS) {
+      guide.innerHTML = '1. Tap the <strong>Share button</strong> ↑ at the bottom of Safari<br>2. Scroll down and tap <strong>"Add to Home Screen"</strong><br>3. Tap <strong>Add</strong> — done!';
+      banner.style.display = 'block';
+    } else if (isAndroid) {
+      guide.innerHTML = '1. Tap the <strong>3-dot menu ⋮</strong> in Chrome (top right)<br>2. Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong><br>3. Tap <strong>Add</strong> — done!';
+      banner.style.display = 'block';
+    }
+  }, 3000);
+});
+
+// Register inline service worker for offline support
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'gate-control-v2';
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll([self.location.pathname])));
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+      return clients.claim();
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => cached)));
+    });
+  `;
+  const swBlob = new Blob([swCode], { type: 'application/javascript' });
+  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
+}
+
+function uploadLogo(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const data = ev.target.result;
+    localStorage.setItem('gac_logo', data);
+    applyLogo(data);
+    flash('✓ Logo updated');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function applyLogo(data) {
+  const img = document.getElementById('logoImg');
+  const svg = document.getElementById('logoSvg');
+  if (data) {
+    img.src = data;
+    img.style.display = 'block';
+    svg.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    svg.style.display = 'block';
+  }
+}
+
+// Show hint on logo hover for touch devices
+document.getElementById('logoBtn').addEventListener('touchstart', () => {
+  document.getElementById('logoHint').style.display = 'flex';
+  setTimeout(() => { document.getElementById('logoHint').style.display = 'none'; }, 1500);
+}, { passive: true });
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+drawStrip('mainStrip',mainPhotos,'main');
+drawStrip('extraStrip',extraPhotos,'extra');
+// Restore saved logo
+const savedLogo = localStorage.getItem('gac_logo');
+if (savedLogo) applyLogo(savedLogo);
+</script>
+</body>
+</html>
