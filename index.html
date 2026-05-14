@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Gate Control">
 <meta name="theme-color" content="#0f6e56">
 <title>Gate Access Control</title>
@@ -16,14 +15,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 input,select,textarea,button{font-family:inherit;font-size:14px}
 .app{max-width:430px;margin:0 auto;min-height:100vh}
 .hdr{background:var(--g);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.hdr-ic{width:34px;height:34px;background:rgba(255,255,255,.18);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;overflow:hidden;position:relative}
-.hdr-ic:active{transform:scale(.93)}
-.hdr h1{font-size:15px;font-weight:700;letter-spacing:.03em}
+.hdr-ic{width:34px;height:34px;background:rgba(255,255,255,.18);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;overflow:hidden}
+.hdr h1{font-size:15px;font-weight:700}
 .hdr-sub{font-size:10px;opacity:.7;margin-top:1px}
 .dot{width:8px;height:8px;background:#4ade80;border-radius:50%;margin-left:auto;animation:blink 2s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .tabs{display:flex;background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:58px;z-index:90}
-.tab{flex:1;padding:9px 2px 7px;font-size:10px;font-weight:700;text-align:center;cursor:pointer;border-bottom:2.5px solid transparent;color:#999;text-transform:uppercase;letter-spacing:.04em;transition:all .2s}
+.tab{flex:1;padding:9px 2px 7px;font-size:10px;font-weight:700;text-align:center;cursor:pointer;border-bottom:2.5px solid transparent;color:#999;text-transform:uppercase;letter-spacing:.04em}
 .tab.on{color:var(--g);border-color:var(--g)}
 .tab i{font-size:16px;display:block;margin-bottom:2px;font-style:normal}
 .pg{display:none;padding:14px 14px 30px}
@@ -33,19 +31,18 @@ input,select,textarea,button{font-family:inherit;font-size:14px}
 .f{margin-bottom:10px}
 .f label{font-size:11px;font-weight:700;color:#777;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;display:block}
 .f label.req::after{content:' *';color:var(--rd)}
-.f input,.f select,.f textarea{width:100%;padding:9px 11px;border:1.5px solid #e0e0e0;border-radius:var(--rs);background:#fafafa;color:#1a1a1a;outline:none;transition:border .15s}
+.f input,.f select,.f textarea{width:100%;padding:9px 11px;border:1.5px solid #e0e0e0;border-radius:var(--rs);background:#fafafa;color:#1a1a1a;outline:none}
 .f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gm);background:#fff}
 .f textarea{resize:none;height:60px}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .plate{font-family:monospace;font-size:18px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
 .iotog{display:flex;border-radius:var(--rs);overflow:hidden;border:2px solid var(--g);margin-bottom:12px}
-.iob{flex:1;padding:11px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#999;letter-spacing:.03em}
+.iob{flex:1;padding:11px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#999}
 .iob.in.on{background:var(--g);color:#fff}
 .iob.out.on{background:var(--rd);color:#fff}
 .clk{background:var(--gl);border:1px solid rgba(29,158,117,.3);border-radius:var(--rs);padding:8px 12px;font-size:12px;font-weight:700;color:var(--g);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.topt{background:#fff;border:2px solid #e0e0e0;border-radius:var(--r);padding:11px 8px;text-align:center;cursor:pointer;transition:all .15s}
-.topt:active{transform:scale(.97)}
+.topt{background:#fff;border:2px solid #e0e0e0;border-radius:var(--r);padding:11px 8px;text-align:center;cursor:pointer}
 .topt.on{border-color:var(--g);background:var(--gl)}
 .topt .tic{font-size:22px;margin-bottom:4px}
 .topt .tlb{font-size:11px;font-weight:700;color:#666}
@@ -68,18 +65,16 @@ input,select,textarea,button{font-family:inherit;font-size:14px}
 .pstrip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-top:6px}
 .pthumb{width:68px;height:68px;border-radius:8px;object-fit:cover;flex-shrink:0;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.15);cursor:pointer}
 .padd{width:68px;height:68px;border-radius:8px;border:2px dashed #ccc;background:#fafafa;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;flex-shrink:0;font-size:10px;color:#aaa}
-.subbtn{width:100%;padding:13px;background:var(--g);color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.02em}
+.subbtn{width:100%;padding:13px;background:var(--g);color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px}
 .subbtn.out{background:var(--rd)}
-.subbtn:active{transform:scale(.98)}
 .yalert{background:var(--al);border:1px solid rgba(186,117,23,.35);border-radius:var(--rs);padding:9px 12px;margin-bottom:10px;font-size:12px;color:var(--am);font-weight:600;display:flex;align-items:flex-start;gap:7px}
 .lsearch{width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:var(--rs);background:#fff;margin-bottom:10px}
 .lfrow{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
 .pill{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid #ddd;cursor:pointer;white-space:nowrap;background:#fff;color:#888;flex-shrink:0}
 .pill.on{background:var(--g);color:#fff;border-color:var(--g)}
 .lcard{background:#fff;border-radius:var(--r);border:.5px solid var(--bd);margin-bottom:8px;overflow:hidden;cursor:pointer}
-.lcard:active{background:#f8f8f6}
 .ltop{display:flex;gap:10px;padding:11px 12px}
-.lthumb{width:50px;height:50px;border-radius:7px;object-fit:cover;background:#eee;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden}
+.lthumb{width:50px;height:50px;border-radius:7px;background:#eee;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden}
 .lthumb img{width:100%;height:100%;object-fit:cover}
 .linfo{flex:1;min-width:0}
 .lplate{font-size:15px;font-weight:800;letter-spacing:1.5px;font-family:monospace}
@@ -90,7 +85,7 @@ input,select,textarea,button{font-family:inherit;font-size:14px}
 .bv{background:#e6f1fb;color:#185fa5}.bc{background:var(--gl);color:var(--g)}.bt{background:var(--al);color:var(--am)}.bf{background:var(--pl);color:var(--pu)}
 .bin{background:#e1f5ee;color:#0f6e56}.bout{background:var(--rl);color:var(--rd)}.byard{background:var(--al);color:var(--am)}.bpaid{background:#e1f5ee;color:#0f6e56}.bunpaid{background:var(--rl);color:var(--rd)}
 .lbottom{border-top:.5px solid #f0f0f0;padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap}
-.ts-chip{font-size:10px;font-weight:600;padding:3px 8px;border-radius:8px;display:flex;align-items:center;gap:4px}
+.ts-chip{font-size:10px;font-weight:600;padding:3px 8px;border-radius:8px}
 .ts-in{background:#e1f5ee;color:#0f6e56}.ts-out{background:var(--rl);color:var(--rd)}.ts-pend{background:#f5f5f3;color:#999}
 .ycard{background:#fff;border-radius:var(--r);border:.5px solid var(--bd);padding:12px;margin-bottom:8px;cursor:pointer}
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
@@ -118,33 +113,33 @@ input,select,textarea,button{font-family:inherit;font-size:14px}
 .msec{font-size:11px;font-weight:800;color:var(--g);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 6px;padding-bottom:4px;border-bottom:1.5px solid var(--gl)}
 .cbtn{width:100%;padding:11px;background:#f5f5f3;border:none;border-radius:var(--rs);font-size:14px;cursor:pointer;margin-top:12px;font-weight:600}
 .act-row{display:flex;gap:8px;margin-top:14px}
-.act-edit{flex:1;padding:11px;background:var(--gl);color:var(--g);border:1.5px solid var(--gm);border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-.act-del{flex:1;padding:11px;background:var(--rl);color:var(--rd);border:1.5px solid #e24b4a;border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.act-edit{flex:1;padding:11px;background:var(--gl);color:var(--g);border:1.5px solid var(--gm);border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer}
+.act-del{flex:1;padding:11px;background:var(--rl);color:var(--rd);border:1.5px solid #e24b4a;border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer}
 .esec{font-size:11px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px;padding-bottom:4px;border-bottom:1.5px solid var(--gl)}
 .esave{width:100%;padding:13px;background:var(--g);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;margin-bottom:8px}
+.tbrow{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
 .sync-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:#4285f4;color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:700;cursor:pointer}
-.sync-btn:active{transform:scale(.97)}
-.sync-btn.syncing{background:#888}
+.share-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:#25d366;color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:700;cursor:pointer}
 .exp-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--g);color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:700;cursor:pointer}
 .flash{position:fixed;top:74px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:9px 18px;border-radius:20px;font-size:12px;z-index:999;opacity:0;transition:opacity .25s;white-space:nowrap;pointer-events:none}
 .flash.on{opacity:1}
-input[type=file]{display:none}
 .empty{text-align:center;padding:40px 0;color:#ccc;font-size:13px}
-#installBanner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;padding:12px 14px;background:var(--g);color:#fff;align-items:center;gap:10px;box-shadow:0 -2px 12px rgba(0,0,0,.2)}
-#manualBanner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;padding:12px 14px;background:#185fa5;color:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.2)}
+input[type=file]{display:none}
 </style>
 </head>
 <body>
 <div class="app">
+
 <div class="hdr">
-  <div class="hdr-ic" id="logoBtn" onclick="document.getElementById('logoFile').click()" title="Tap to upload logo">
+  <div class="hdr-ic" onclick="document.getElementById('logoFile').click()">
     <img id="logoImg" style="width:100%;height:100%;object-fit:cover;border-radius:8px;display:none">
     <svg id="logoSvg" width="18" height="18" fill="none" stroke="#fff" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
   </div>
   <input type="file" id="logoFile" accept="image/*" onchange="uploadLogo(event)">
-  <div><h1>GATE CONTROL</h1><div class="hdr-sub">Tap lock icon to add your logo</div></div>
+  <div><h1>GATE CONTROL</h1><div class="hdr-sub">Tap lock to add logo</div></div>
   <div class="dot"></div>
 </div>
+
 <div class="tabs">
   <div class="tab on" onclick="goTab('new')"><i>➕</i>New</div>
   <div class="tab" onclick="goTab('log')"><i>📋</i>Log</div>
@@ -175,57 +170,54 @@ input[type=file]{display:none}
     <div class="ct">Vehicle</div>
     <div class="f"><label class="req">Registration / License Plate</label><input type="text" id="reg" class="plate" placeholder="e.g. ABC 123 GP" oninput="this.value=this.value.toUpperCase();checkYard()"></div>
     <div id="yalert" class="yalert" style="display:none">⚠️ <span id="yalertMsg"></span></div>
-    <div class="f"><label>Photos (plate, disk, vehicle)</label>
+    <div class="f"><label>Photos</label>
       <div class="pstrip" id="mainStrip"></div>
       <input type="file" id="mainFile" accept="image/*" capture="environment" onchange="addPhoto(event,'main')">
     </div>
   </div>
-
   <div id="form-visitor">
     <div class="card">
       <div class="ct">👤 Visitor Details</div>
       <div class="f"><label class="req">Driver / Visitor Name</label><input id="v-name" placeholder="Full name"></div>
-      <div class="f"><label class="req">Company / Organisation</label><input id="v-company" placeholder="Company name"></div>
+      <div class="f"><label class="req">Company</label><input id="v-company" placeholder="Company name"></div>
       <div class="fr">
-        <div class="f"><label>Contact Number</label><input id="v-contact" type="tel" placeholder="+27..."></div>
-        <div class="f"><label class="req">Reason for Entry</label><input id="v-reason" placeholder="Purpose"></div>
+        <div class="f"><label>Contact</label><input id="v-contact" type="tel" placeholder="+27..."></div>
+        <div class="f"><label class="req">Reason</label><input id="v-reason" placeholder="Purpose"></div>
       </div>
     </div>
     <div class="card">
       <div class="chi" id="vTrTog" onclick="togTrailer('v')"><div class="chb" id="vTrBox"></div><div class="chl">Trailer attached?</div></div>
-      <div id="vTrF" class="tr-sec" style="display:none;margin-top:10px"><div class="f" style="margin:0"><label>Trailer Registration</label><input id="v-tr" class="plate" placeholder="Trailer Reg" oninput="this.value=this.value.toUpperCase()"></div></div>
+      <div id="vTrF" class="tr-sec" style="display:none;margin-top:10px"><div class="f" style="margin:0"><label>Trailer Reg</label><input id="v-tr" class="plate" placeholder="Trailer Reg" oninput="this.value=this.value.toUpperCase()"></div></div>
     </div>
   </div>
-
   <div id="form-company" style="display:none">
     <div class="card">
-      <div class="ct">🏢 Company Vehicle Details</div>
+      <div class="ct">🏢 Company Vehicle</div>
       <div class="f"><label class="req">Driver Name</label><input id="c-driver" placeholder="Full name"></div>
       <div class="f"><label class="req">Reason / Destination</label><input id="c-reason" placeholder="Purpose"></div>
       <div class="fr">
-        <div class="f"><label>Depot KM Out</label><input id="c-kmout" type="number" placeholder="e.g. 125400"></div>
-        <div class="f"><label>Depot KM In</label><input id="c-kmin" type="number" placeholder="Return KM"></div>
+        <div class="f"><label>KM Out</label><input id="c-kmout" type="number" placeholder="e.g. 125400"></div>
+        <div class="f"><label>KM In</label><input id="c-kmin" type="number" placeholder="Return KM"></div>
       </div>
     </div>
     <div class="card">
       <div class="chi" id="cTrTog" onclick="togTrailer('c')"><div class="chb" id="cTrBox"></div><div class="chl">Trailer attached?</div></div>
-      <div id="cTrF" class="tr-sec" style="display:none;margin-top:10px"><div class="f" style="margin:0"><label>Trailer Registration</label><input id="c-tr" class="plate" placeholder="Trailer Reg" oninput="this.value=this.value.toUpperCase()"></div></div>
+      <div id="cTrF" class="tr-sec" style="display:none;margin-top:10px"><div class="f" style="margin:0"><label>Trailer Reg</label><input id="c-tr" class="plate" placeholder="Trailer Reg" oninput="this.value=this.value.toUpperCase()"></div></div>
     </div>
   </div>
-
   <div id="form-truck" style="display:none">
     <div class="card">
-      <div class="ct">🚛 Truck Stop Details</div>
+      <div class="ct">🚛 Truck Stop</div>
       <div class="f"><label class="req">Driver Name</label><input id="ts-driver" placeholder="Full name"></div>
-      <div class="f"><label class="req">Company / Transporter</label><input id="ts-company" placeholder="Company name"></div>
-      <div class="f"><label>Contact Number</label><input id="ts-contact" type="tel" placeholder="+27..."></div>
+      <div class="f"><label class="req">Company</label><input id="ts-company" placeholder="Company name"></div>
+      <div class="f"><label>Contact</label><input id="ts-contact" type="tel" placeholder="+27..."></div>
     </div>
     <div class="card">
       <div class="chi" id="tsTrTog" onclick="togTrailer('ts')"><div class="chb" id="tsTrBox"></div><div class="chl">Trailer attached?</div></div>
-      <div id="tsTrF" class="tr-sec" style="display:none;margin-top:10px"><div class="f" style="margin:0"><label>Trailer Registration</label><input id="ts-tr" class="plate" placeholder="Trailer Reg" oninput="this.value=this.value.toUpperCase()"></div></div>
+      <div id="tsTrF" class="tr-sec" style="display:none;margin-top:10px"><div class="f" style="margin:0"><label>Trailer Reg</label><input id="ts-tr" class="plate" placeholder="Trailer Reg" oninput="this.value=this.value.toUpperCase()"></div></div>
     </div>
     <div class="card">
-      <div class="ct">💳 Payment Status</div>
+      <div class="ct">💳 Payment</div>
       <div class="f"><label>Parking Fee</label>
         <div class="prow"><div class="popt ppaid" id="pkPd" onclick="setPay('park','paid')">✓ Paid</div><div class="popt punpaid ou" id="pkUp" onclick="setPay('park','unpaid')">✗ Unpaid</div></div>
       </div>
@@ -234,10 +226,9 @@ input[type=file]{display:none}
       </div>
     </div>
   </div>
-
   <div id="form-fleet" style="display:none">
     <div class="card">
-      <div class="ct">⚙️ Fleet Equipment Details</div>
+      <div class="ct">⚙️ Fleet Equipment</div>
       <div class="f"><label class="req">Driver Name</label><input id="fl-driver" placeholder="Full name"></div>
       <div class="f"><label class="req">Operations Controller</label><input id="fl-ops" placeholder="Controller name"></div>
       <div class="fr">
@@ -260,19 +251,15 @@ input[type=file]{display:none}
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="ct">📝 Notes & Extra Photos</div>
     <div class="f"><label>Notes</label><textarea id="notes" placeholder="Additional observations..."></textarea></div>
-    <div class="f"><label>Extra photos (trailer, cargo, damage, ID)</label>
+    <div class="f"><label>Extra photos</label>
       <div class="pstrip" id="extraStrip"></div>
       <input type="file" id="extraFile" accept="image/*" capture="environment" onchange="addPhoto(event,'extra')">
     </div>
   </div>
-  <button class="subbtn" id="subbtn" onclick="submitEntry()">
-    <svg width="18" height="18" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-    RECORD BOOK IN
-  </button>
+  <button class="subbtn" id="subbtn" onclick="submitEntry()">✓ RECORD BOOK IN</button>
 </div>
 
 <div id="pg-log" class="pg">
@@ -286,20 +273,20 @@ input[type=file]{display:none}
     <div class="pill" onclick="setFilt(this,'in')">In Only</div>
     <div class="pill" onclick="setFilt(this,'out')">Out Only</div>
   </div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+  <div class="tbrow">
     <div style="font-size:11px;color:#aaa;flex:1" id="logCount"></div>
     <button class="sync-btn" id="syncBtn" onclick="syncToSheet()">☁️ Sync</button>
     <button class="share-btn" onclick="shareLog()">📲 WhatsApp</button>
     <button class="exp-btn" onclick="showExport()">⬇ CSV</button>
   </div>
-  <div id="syncStatus" style="display:none;padding:8px 12px;border-radius:var(--rs);font-size:12px;font-weight:600;margin-bottom:10px;text-align:center;background:#e1f5ee;color:#0f6e56"></div>
+  <div id="syncMsg" style="display:none;padding:8px 12px;border-radius:var(--rs);font-size:12px;font-weight:600;margin-bottom:10px;text-align:center;background:#e1f5ee;color:#0f6e56"></div>
   <div id="logList"></div>
 </div>
 
 <div id="pg-yard" class="pg">
   <div class="card" style="background:var(--al);border-color:rgba(186,117,23,.3);margin-bottom:12px">
     <div style="font-size:13px;font-weight:700;color:var(--am);margin-bottom:2px">🏭 Currently In Yard</div>
-    <div style="font-size:11px;color:#888">Booked in but not yet out. Tap truck to update payments.</div>
+    <div style="font-size:11px;color:#888">Tap truck stop entry to update payments.</div>
   </div>
   <div id="yardList"></div>
 </div>
@@ -314,21 +301,18 @@ input[type=file]{display:none}
   <div class="card"><div class="ct">By Entry Type</div><div id="typechart"></div></div>
   <div class="card" style="margin-top:10px"><div class="ct">Recent Activity</div><div id="recact"></div></div>
 </div>
+
 </div>
 
-<!-- DETAIL MODAL -->
 <div class="mbg hide" id="detMod" onclick="if(event.target===this)closeDet()">
   <div class="modal"><div class="mh"></div><div id="detInner"></div></div>
 </div>
-<!-- PAY MODAL -->
 <div class="mbg hide" id="payMod" onclick="if(event.target===this)closePay()">
   <div class="modal"><div class="mh"></div><div id="payInner"></div></div>
 </div>
-<!-- EDIT MODAL -->
 <div class="mbg hide" id="editMod" onclick="if(event.target===this)closeEdit()">
   <div class="modal"><div class="mh"></div><div class="mt">Edit Entry</div><div class="ms" id="editSub"></div><div id="editInner"></div></div>
 </div>
-<!-- EXPORT MODAL -->
 <div class="mbg hide" id="expMod" onclick="if(event.target===this)closeExport()">
   <div class="modal">
     <div class="mh"></div>
@@ -351,13 +335,6 @@ input[type=file]{display:none}
         <div class="pill" onclick="setExpF(this,'date','today')">Today</div>
         <div class="pill" onclick="setExpF(this,'date','week')">This Week</div>
         <div class="pill" onclick="setExpF(this,'date','month')">This Month</div>
-        <div class="pill" onclick="setExpF(this,'date','custom')">Custom</div>
-      </div>
-      <div id="custDR" style="display:none;margin-top:8px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div class="f" style="margin:0"><label>From</label><input type="date" id="expFrom"></div>
-          <div class="f" style="margin:0"><label>To</label><input type="date" id="expTo"></div>
-        </div>
       </div>
     </div>
     <div id="expPrev" style="background:#f5f5f3;border-radius:var(--rs);padding:9px 12px;font-size:12px;color:#888;text-align:center;margin-bottom:12px"></div>
@@ -366,48 +343,44 @@ input[type=file]{display:none}
   </div>
 </div>
 
-<!-- INSTALL BANNERS -->
-<div id="installBanner">
-  <div style="font-size:22px">📲</div>
-  <div style="flex:1"><div style="font-size:13px;font-weight:700">Install Gate Control</div><div style="font-size:11px;opacity:.8">Add to home screen</div></div>
-  <button onclick="doInstall()" style="background:#fff;color:var(--g);border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer">Install</button>
-  <button onclick="document.getElementById('installBanner').style.display='none'" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:7px;padding:8px 10px;font-size:12px;cursor:pointer">✕</button>
-</div>
-<div id="manualBanner">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-    <span style="font-size:18px">📲</span>
-    <div style="flex:1;font-size:13px;font-weight:700">Add to Home Screen</div>
-    <button onclick="dismissManual()" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:12px;cursor:pointer">✕</button>
-  </div>
-  <div id="manualText" style="font-size:12px;line-height:1.7;background:rgba(0,0,0,.15);padding:8px 10px;border-radius:6px"></div>
-</div>
-
 <div class="flash" id="flash"></div>
 
 <script>
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwQcoaK2aYMekM_BECK8SNOjHLsx6GZbABd3IOmlPCLld6dEdtanOWfO8QPAdXdnlco/exec';
 let DB=[];try{DB=JSON.parse(localStorage.getItem('gac3')||'[]');}catch(e){}
 function save(){try{localStorage.setItem('gac3',JSON.stringify(DB.slice(-600)));}catch(e){}}
 let curType='visitor',curIO='in',mainPhotos=[],extraPhotos=[],trTog={v:false,c:false,ts:false},parkPay='unpaid',washPay='unpaid',chklist={},logFilt='all',expFilt={type:'all',date:'all'},editYardId=null,editId=null,editChklist={},editParkPay='unpaid',editWashPay='unpaid',editBookedOut=null;
 const TL={visitor:'Visitor',company:'Company Vehicle',truck:'Truck Stop',fleet:'Fleet Equipment'};
 const TI={visitor:'👤',company:'🏢',truck:'🚛',fleet:'⚙️'};
 const BC={visitor:'bv',company:'bc',truck:'bt',fleet:'bf'};
+
 function tick(){const n=new Date();document.getElementById('clk').textContent=n.toLocaleDateString('en-ZA',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+'  '+n.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
 setInterval(tick,1000);tick();
-function goTab(t){document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['new','log','yard','stats'][i]===t));document.querySelectorAll('.pg').forEach(el=>el.classList.remove('on'));document.getElementById('pg-'+t).classList.add('on');if(t==='log')renderLog('');if(t==='yard')renderYard();if(t==='stats')renderStats();}
-function setIO(v){curIO=v;document.getElementById('ioIn').classList.toggle('on',v==='in');document.getElementById('ioOut').classList.toggle('on',v==='out');const b=document.getElementById('subbtn');b.className='subbtn'+(v==='out'?' out':'');b.innerHTML=(v==='in'?'<svg width="18" height="18" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> RECORD BOOK IN':'<svg width="18" height="18" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> RECORD BOOK OUT');checkYard();}
+
+function goTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['new','log','yard','stats'][i]===t));
+  document.querySelectorAll('.pg').forEach(el=>el.classList.remove('on'));
+  document.getElementById('pg-'+t).classList.add('on');
+  if(t==='log')renderLog('');
+  if(t==='yard')renderYard();
+  if(t==='stats')renderStats();
+}
+
+function setIO(v){curIO=v;document.getElementById('ioIn').classList.toggle('on',v==='in');document.getElementById('ioOut').classList.toggle('on',v==='out');const b=document.getElementById('subbtn');b.className='subbtn'+(v==='out'?' out':'');b.textContent=v==='in'?'✓ RECORD BOOK IN':'✓ RECORD BOOK OUT';checkYard();}
 function setType(t){curType=t;['visitor','company','truck','fleet'].forEach(x=>{document.getElementById('t-'+x).classList.toggle('on',x===t);document.getElementById('form-'+x).style.display=x===t?'':'none';});}
 function chkSVG(){return'<svg width="12" height="12" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';}
 function togTrailer(p){trTog[p]=!trTog[p];const on=trTog[p];const box=document.getElementById(p+'TrBox');box.style.background=on?'var(--g)':'';box.style.borderColor=on?'var(--g)':'#ccc';box.innerHTML=on?chkSVG():'';document.getElementById(p+'TrTog').classList.toggle('on',on);document.getElementById(p+'TrF').style.display=on?'':'none';}
 function setPay(w,s){if(w==='park')parkPay=s;else washPay=s;const pd=w==='park'?'pkPd':'wsPd';const up=w==='park'?'pkUp':'wsUp';document.getElementById(pd).className='popt ppaid'+(s==='paid'?' op':'');document.getElementById(up).className='popt punpaid'+(s==='unpaid'?' ou':'');}
 function togChk(el,name){const on=el.classList.toggle('on');const box=el.querySelector('.chb');box.style.background=on?'var(--g)':'';box.style.borderColor=on?'var(--g)':'#ccc';box.innerHTML=on?chkSVG():'';if(on)chklist[name]=true;else delete chklist[name];}
 function addPhoto(e,t){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{if(t==='main'){mainPhotos.push(ev.target.result);drawStrip('mainStrip',mainPhotos,'main');}else{extraPhotos.push(ev.target.result);drawStrip('extraStrip',extraPhotos,'extra');}};r.readAsDataURL(f);e.target.value='';}
-function drawStrip(id,arr,t){const el=document.getElementById(id);if(!el)return;el.innerHTML='';arr.forEach((p,i)=>{const img=document.createElement('img');img.src=p;img.className='pthumb';img.onclick=()=>{if(confirm('Remove photo?')){arr.splice(i,1);drawStrip(id,arr,t);}};el.appendChild(img);});const a=document.createElement('div');a.className='padd';a.onclick=()=>document.getElementById(t==='main'?'mainFile':'extraFile').click();a.innerHTML='<svg width="20" height="20" fill="none" stroke="#bbb" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Add</span>';el.appendChild(a);}
-function checkYard(){const plate=(document.getElementById('reg').value||'').toUpperCase().trim();const al=document.getElementById('yalert');if(!plate){al.style.display='none';return;}const found=DB.find(e=>e.plate===plate&&e.timeIn&&!e.bookedOut);if(found&&curIO==='out'){const hrs=Math.round((Date.now()-new Date(found.timeIn).getTime())/3600000);document.getElementById('yalertMsg').textContent=`In yard for ${hrs}h (${found.driver||'unknown'}). Recording book-out.`;al.style.display='flex';}else al.style.display='none';}
+function drawStrip(id,arr,t){const el=document.getElementById(id);if(!el)return;el.innerHTML='';arr.forEach((p,i)=>{const img=document.createElement('img');img.src=p;img.className='pthumb';img.onclick=()=>{if(confirm('Remove?')){arr.splice(i,1);drawStrip(id,arr,t);}};el.appendChild(img);});const a=document.createElement('div');a.className='padd';a.onclick=()=>document.getElementById(t==='main'?'mainFile':'extraFile').click();a.innerHTML='<svg width="20" height="20" fill="none" stroke="#bbb" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Add</span>';el.appendChild(a);}
+function checkYard(){const plate=(document.getElementById('reg').value||'').toUpperCase().trim();const al=document.getElementById('yalert');if(!plate){al.style.display='none';return;}const found=DB.find(e=>e.plate===plate&&e.timeIn&&!e.bookedOut);if(found&&curIO==='out'){const hrs=Math.round((Date.now()-new Date(found.timeIn).getTime())/3600000);document.getElementById('yalertMsg').textContent='In yard for '+hrs+'h ('+( found.driver||'unknown')+'). Recording book-out.';al.style.display='flex';}else al.style.display='none';}
 function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
 function fDT(iso){if(!iso)return'—';const d=new Date(iso);return d.toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});}
 function dAgo(iso){return iso?Math.floor((Date.now()-new Date(iso).getTime())/86400000):0;}
 function hAgo(iso){return iso?Math.round((Date.now()-new Date(iso).getTime())/3600000):0;}
 function flash(msg){const f=document.getElementById('flash');f.textContent=msg;f.classList.add('on');setTimeout(()=>f.classList.remove('on'),2400);}
+
 function submitEntry(){
   const plate=gv('reg').toUpperCase();if(!plate){flash('⚠ Enter a registration plate');return;}
   const guard=gv('guardName');if(!guard){flash('⚠ Enter guard name');return;}
@@ -420,102 +393,119 @@ function submitEntry(){
   if(curType==='fleet'){const nm=gv('fl-driver');if(!nm){flash('⚠ Enter driver name');return;}entry.driver=nm;entry.opsController=gv('fl-ops');entry.fleetNum=gv('fl-fnum');entry.trailerNum=gv('fl-tnum');entry.km=gv('fl-km');entry.checklist={...chklist};entry.counts={cnr:gv('cnt-cnr'),upr:gv('cnt-upr'),dun:gv('cnt-dun')};}
   DB.unshift(entry);save();flash('✓ Entry recorded — '+plate);resetForm();
 }
-function resetForm(){['reg','guardName','v-name','v-company','v-contact','v-reason','v-tr','c-driver','c-reason','c-kmout','c-kmin','c-tr','ts-driver','ts-company','ts-contact','ts-tr','fl-driver','fl-ops','fl-fnum','fl-tnum','fl-km','cnt-cnr','cnt-upr','cnt-dun','notes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});mainPhotos=[];extraPhotos=[];drawStrip('mainStrip',mainPhotos,'main');drawStrip('extraStrip',extraPhotos,'extra');trTog={v:false,c:false,ts:false};['v','c','ts'].forEach(p=>{['TrBox','TrF','TrTog'].forEach(s=>{const el=document.getElementById(p+s);if(!el)return;if(s==='TrBox'){el.style.background='';el.style.borderColor='#ccc';el.innerHTML='';}if(s==='TrF')el.style.display='none';if(s==='TrTog')el.classList.remove('on');});});chklist={};document.querySelectorAll('.chi.on').forEach(el=>{el.classList.remove('on');const b=el.querySelector('.chb');if(b){b.style.background='';b.style.borderColor='#ccc';b.innerHTML='';}});parkPay='unpaid';washPay='unpaid';setPay('park','unpaid');setPay('wash','unpaid');document.getElementById('yalert').style.display='none';}
+
+function resetForm(){
+  ['reg','guardName','v-name','v-company','v-contact','v-reason','v-tr','c-driver','c-reason','c-kmout','c-kmin','c-tr','ts-driver','ts-company','ts-contact','ts-tr','fl-driver','fl-ops','fl-fnum','fl-tnum','fl-km','cnt-cnr','cnt-upr','cnt-dun','notes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  mainPhotos=[];extraPhotos=[];drawStrip('mainStrip',mainPhotos,'main');drawStrip('extraStrip',extraPhotos,'extra');
+  trTog={v:false,c:false,ts:false};
+  ['v','c','ts'].forEach(p=>{const box=document.getElementById(p+'TrBox');if(box){box.style.background='';box.style.borderColor='#ccc';box.innerHTML='';}const f=document.getElementById(p+'TrF');if(f)f.style.display='none';const tog=document.getElementById(p+'TrTog');if(tog)tog.classList.remove('on');});
+  chklist={};document.querySelectorAll('.chi.on').forEach(el=>{el.classList.remove('on');const b=el.querySelector('.chb');if(b){b.style.background='';b.style.borderColor='#ccc';b.innerHTML='';}});
+  parkPay='unpaid';washPay='unpaid';setPay('park','unpaid');setPay('wash','unpaid');
+  document.getElementById('yalert').style.display='none';
+}
+
 function setFilt(el,f){document.querySelectorAll('.lfrow .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');logFilt=f;renderLog(document.getElementById('logSearch').value||'');}
-function renderLog(q=''){let data=[...DB];if(logFilt==='in')data=data.filter(e=>e.timeIn&&!e.bookedOut);else if(logFilt==='out')data=data.filter(e=>e.bookedOut);else if(logFilt!=='all')data=data.filter(e=>e.type===logFilt);if(q)data=data.filter(e=>(e.plate+e.driver+e.company+'').toLowerCase().includes(q.toLowerCase()));const cnt=document.getElementById('logCount');if(cnt)cnt.textContent=data.length+' record'+(data.length!==1?'s':'');const list=document.getElementById('logList');if(!data.length){list.innerHTML='<div class="empty">No entries found</div>';return;}list.innerHTML=data.map(e=>{const inYard=e.timeIn&&!e.bookedOut;const days=dAgo(e.timeIn);const th=e.photos&&e.photos.length?`<div class="lthumb"><img src="${e.photos[0]}"></div>`:`<div class="lthumb">${TI[e.type]||'🚗'}</div>`;const tsIn=e.timeIn?`<span class="ts-chip ts-in">⬇ IN: ${fDT(e.timeIn)}</span>`:`<span class="ts-chip ts-pend">⬇ IN: —</span>`;const tsOut=e.bookedOut&&e.timeOut?`<span class="ts-chip ts-out">⬆ OUT: ${fDT(e.timeOut)}</span>`:`<span class="ts-chip ts-pend">⬆ OUT: pending</span>`;return`<div class="lcard" onclick="openDet(${e.id})"><div class="ltop">${th}<div class="linfo"><div class="lplate">${e.plate}</div><div class="lname">${e.driver||''}${e.company?' · '+e.company:''}</div><div class="lbadges"><span class="bdg ${BC[e.type]||'bv'}">${TL[e.type]}</span>${inYard?'<span class="bdg byard">In Yard</span>':''}${e.type==='truck'&&e.parkPay==='paid'?'<span class="bdg bpaid">Parking ✓</span>':''}${inYard&&days>0?`<span class="bdg" style="background:#faeeda;color:#ba7517">⏱ ${days}d</span>`:''}</div></div><div class="ltime">${e.guard||''}</div></div><div class="lbottom">${tsIn}${tsOut}</div></div>`;}).join('');}
-function openDet(id){const e=DB.find(x=>x.id===id);if(!e)return;const allP=[...(e.photos||[]),...(e.extraPhotos||[])];const inYard=e.timeIn&&!e.bookedOut;let ex='';if(e.type==='visitor')ex=`<div class="ir"><span class="lb">Company</span><span class="vl">${e.company||'—'}</span></div><div class="ir"><span class="lb">Contact</span><span class="vl">${e.contact||'—'}</span></div><div class="ir"><span class="lb">Reason</span><span class="vl">${e.reason||'—'}</span></div>`;if(e.type==='company')ex=`<div class="ir"><span class="lb">Reason</span><span class="vl">${e.reason||'—'}</span></div><div class="ir"><span class="lb">KM Out</span><span class="vl">${e.kmOut||'—'}</span></div><div class="ir"><span class="lb">KM In</span><span class="vl">${e.kmIn||'—'}</span></div>`;if(e.type==='truck')ex=`<div class="ir"><span class="lb">Company</span><span class="vl">${e.company||'—'}</span></div><div class="ir"><span class="lb">Contact</span><span class="vl">${e.contact||'—'}</span></div><div class="ir"><span class="lb">Parking</span><span class="vl">${e.parkPay==='paid'?'✓ Paid':'✗ Unpaid'}</span></div><div class="ir"><span class="lb">Wash</span><span class="vl">${e.washPay==='paid'?'✓ Paid':'✗ Unpaid'}</span></div>`;if(e.type==='fleet'){const ck=Object.keys(e.checklist||{}).join(', ')||'None';const c=e.counts||{};ex=`<div class="ir"><span class="lb">Ops Controller</span><span class="vl">${e.opsController||'—'}</span></div><div class="ir"><span class="lb">Fleet #</span><span class="vl">${e.fleetNum||'—'}</span></div><div class="ir"><span class="lb">Trailer #</span><span class="vl">${e.trailerNum||'—'}</span></div><div class="ir"><span class="lb">KM Reading</span><span class="vl">${e.km||'—'}</span></div><div class="ir"><span class="lb">Equipment</span><span class="vl">${ck}</span></div>${c.cnr?`<div class="ir"><span class="lb">Corner Plates</span><span class="vl">${c.cnr}</span></div>`:''}${c.upr?`<div class="ir"><span class="lb">Uprights</span><span class="vl">${c.upr}</span></div>`:''}${c.dun?`<div class="ir"><span class="lb">Dunnages</span><span class="vl">${c.dun}</span></div>`:''}`;} 
-document.getElementById('detInner').innerHTML=`<div class="mt">${e.plate}</div><div class="ms">${TI[e.type]} ${TL[e.type]} · ${inYard?'In Yard':e.bookedOut?'Booked Out':'—'}</div>${allP.length?`<div class="mphotos">${allP.map(p=>`<img src="${p}">`).join('')}</div>`:''}<div class="msec">Entry Details</div><div class="ir"><span class="lb">Driver / Name</span><span class="vl">${e.driver||'—'}</span></div>${ex}${e.trailerReg?`<div class="ir"><span class="lb">Trailer Reg</span><span class="vl">${e.trailerReg}</span></div>`:''}${e.notes?`<div class="ir"><span class="lb">Notes (In)</span><span class="vl">${e.notes}</span></div>`:''}${e.notesOut?`<div class="ir"><span class="lb">Notes (Out)</span><span class="vl">${e.notesOut}</span></div>`:''}<div class="msec">Timestamps</div><div class="ir"><span class="lb">⬇ Book In</span><span class="vl" style="color:var(--g)">${fDT(e.timeIn)}</span></div><div class="ir"><span class="lb">⬆ Book Out</span><span class="vl" style="color:${e.bookedOut?'var(--rd)':'#bbb'}">${fDT(e.timeOut)}</span></div>${inYard?`<div class="ir"><span class="lb">Time in Yard</span><span class="vl" style="color:var(--am)">${dAgo(e.timeIn)>0?dAgo(e.timeIn)+'d ':''} ${hAgo(e.timeIn)%24}h</span></div>`:''}<div class="msec">Guard Info</div><div class="ir"><span class="lb">Guard In</span><span class="vl">${e.guard||'—'}</span></div><div class="ir"><span class="lb">Guard Out</span><span class="vl">${e.guardOut||'—'}</span></div><div class="ir"><span class="lb">Photos</span><span class="vl">${allP.length}</span></div><div class="act-row"><button class="act-edit" onclick="closeDet();openEdit(${e.id})">✏️ Edit Entry</button><button class="act-del" onclick="deleteEntry(${e.id})">🗑 Delete</button></div><button class="cbtn" onclick="closeDet()">Close</button>`;
-document.getElementById('detMod').classList.remove('hide');}
+
+function renderLog(q){
+  q=q||'';
+  let data=[...DB];
+  if(logFilt==='in')data=data.filter(e=>e.timeIn&&!e.bookedOut);
+  else if(logFilt==='out')data=data.filter(e=>e.bookedOut);
+  else if(logFilt!=='all')data=data.filter(e=>e.type===logFilt);
+  if(q)data=data.filter(e=>(e.plate+e.driver+e.company+'').toLowerCase().includes(q.toLowerCase()));
+  const cnt=document.getElementById('logCount');
+  if(cnt)cnt.textContent=data.length+' record'+(data.length!==1?'s':'');
+  const list=document.getElementById('logList');
+  if(!data.length){list.innerHTML='<div class="empty">No entries found</div>';return;}
+  list.innerHTML=data.map(e=>{
+    const inYard=e.timeIn&&!e.bookedOut;
+    const days=dAgo(e.timeIn);
+    const th=e.photos&&e.photos.length?'<div class="lthumb"><img src="'+e.photos[0]+'"></div>':'<div class="lthumb">'+TI[e.type]+'</div>';
+    const tsIn=e.timeIn?'<span class="ts-chip ts-in">⬇ IN: '+fDT(e.timeIn)+'</span>':'<span class="ts-chip ts-pend">⬇ IN: —</span>';
+    const tsOut=e.bookedOut&&e.timeOut?'<span class="ts-chip ts-out">⬆ OUT: '+fDT(e.timeOut)+'</span>':'<span class="ts-chip ts-pend">⬆ OUT: pending</span>';
+    return '<div class="lcard" onclick="openDet('+e.id+')"><div class="ltop">'+th+'<div class="linfo"><div class="lplate">'+e.plate+'</div><div class="lname">'+(e.driver||'')+(e.company?' · '+e.company:'')+'</div><div class="lbadges"><span class="bdg '+(BC[e.type]||'bv')+'">'+TL[e.type]+'</span>'+(inYard?'<span class="bdg byard">In Yard</span>':'')+(e.type==='truck'&&e.parkPay==='paid'?'<span class="bdg bpaid">Parking ✓</span>':'')+(inYard&&days>0?'<span class="bdg" style="background:#faeeda;color:#ba7517">⏱ '+days+'d</span>':'')+'</div></div><div class="ltime">'+(e.guard||'')+'</div></div><div class="lbottom">'+tsIn+tsOut+'</div></div>';
+  }).join('');
+}
+
+function openDet(id){
+  const e=DB.find(x=>x.id===id);if(!e)return;
+  const allP=[...(e.photos||[]),...(e.extraPhotos||[])];
+  const inYard=e.timeIn&&!e.bookedOut;
+  let ex='';
+  if(e.type==='visitor')ex='<div class="ir"><span class="lb">Company</span><span class="vl">'+(e.company||'—')+'</span></div><div class="ir"><span class="lb">Contact</span><span class="vl">'+(e.contact||'—')+'</span></div><div class="ir"><span class="lb">Reason</span><span class="vl">'+(e.reason||'—')+'</span></div>';
+  if(e.type==='company')ex='<div class="ir"><span class="lb">Reason</span><span class="vl">'+(e.reason||'—')+'</span></div><div class="ir"><span class="lb">KM Out</span><span class="vl">'+(e.kmOut||'—')+'</span></div><div class="ir"><span class="lb">KM In</span><span class="vl">'+(e.kmIn||'—')+'</span></div>';
+  if(e.type==='truck')ex='<div class="ir"><span class="lb">Company</span><span class="vl">'+(e.company||'—')+'</span></div><div class="ir"><span class="lb">Contact</span><span class="vl">'+(e.contact||'—')+'</span></div><div class="ir"><span class="lb">Parking</span><span class="vl">'+(e.parkPay==='paid'?'✓ Paid':'✗ Unpaid')+'</span></div><div class="ir"><span class="lb">Wash</span><span class="vl">'+(e.washPay==='paid'?'✓ Paid':'✗ Unpaid')+'</span></div>';
+  if(e.type==='fleet'){const ck=Object.keys(e.checklist||{}).join(', ')||'None';const c=e.counts||{};ex='<div class="ir"><span class="lb">Ops Controller</span><span class="vl">'+(e.opsController||'—')+'</span></div><div class="ir"><span class="lb">Fleet #</span><span class="vl">'+(e.fleetNum||'—')+'</span></div><div class="ir"><span class="lb">Trailer #</span><span class="vl">'+(e.trailerNum||'—')+'</span></div><div class="ir"><span class="lb">KM</span><span class="vl">'+(e.km||'—')+'</span></div><div class="ir"><span class="lb">Equipment</span><span class="vl">'+ck+'</span></div>'+(c.cnr?'<div class="ir"><span class="lb">Corner Plates</span><span class="vl">'+c.cnr+'</span></div>':'')+(c.upr?'<div class="ir"><span class="lb">Uprights</span><span class="vl">'+c.upr+'</span></div>':'')+(c.dun?'<div class="ir"><span class="lb">Dunnages</span><span class="vl">'+c.dun+'</span></div>':'');}
+  document.getElementById('detInner').innerHTML='<div class="mt">'+e.plate+'</div><div class="ms">'+TI[e.type]+' '+TL[e.type]+' · '+(inYard?'In Yard':e.bookedOut?'Booked Out':'—')+'</div>'+(allP.length?'<div class="mphotos">'+allP.map(p=>'<img src="'+p+'">').join('')+'</div>':'')+'<div class="msec">Entry Details</div><div class="ir"><span class="lb">Driver</span><span class="vl">'+(e.driver||'—')+'</span></div>'+ex+(e.trailerReg?'<div class="ir"><span class="lb">Trailer Reg</span><span class="vl">'+e.trailerReg+'</span></div>':'')+(e.notes?'<div class="ir"><span class="lb">Notes In</span><span class="vl">'+e.notes+'</span></div>':'')+(e.notesOut?'<div class="ir"><span class="lb">Notes Out</span><span class="vl">'+e.notesOut+'</span></div>':'')+'<div class="msec">Timestamps</div><div class="ir"><span class="lb">⬇ Book In</span><span class="vl" style="color:var(--g)">'+fDT(e.timeIn)+'</span></div><div class="ir"><span class="lb">⬆ Book Out</span><span class="vl" style="color:'+(e.bookedOut?'var(--rd)':'#bbb')+'">'+fDT(e.timeOut)+'</span></div>'+(inYard?'<div class="ir"><span class="lb">Time in Yard</span><span class="vl" style="color:var(--am)">'+(dAgo(e.timeIn)>0?dAgo(e.timeIn)+'d ':'')+hAgo(e.timeIn)%24+'h</span></div>':'')+'<div class="msec">Guard</div><div class="ir"><span class="lb">Guard In</span><span class="vl">'+(e.guard||'—')+'</span></div><div class="ir"><span class="lb">Guard Out</span><span class="vl">'+(e.guardOut||'—')+'</span></div><div class="act-row"><button class="act-edit" onclick="closeDet();openEdit('+e.id+')">✏️ Edit</button><button class="act-del" onclick="deleteEntry('+e.id+')">🗑 Delete</button></div><button class="cbtn" onclick="closeDet()">Close</button>';
+  document.getElementById('detMod').classList.remove('hide');
+}
 function closeDet(){document.getElementById('detMod').classList.add('hide');}
-function deleteEntry(id){const e=DB.find(x=>x.id===id);if(!e)return;if(!confirm(`Delete entry for ${e.plate}?\n\nThis cannot be undone.`))return;DB=DB.filter(x=>x.id!==id);save();closeDet();flash('🗑 Entry deleted — '+e.plate);renderLog(document.getElementById('logSearch')?document.getElementById('logSearch').value||'':'');}
-function esc(v){return v?String(v).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
-function openEdit(id){const e=DB.find(x=>x.id===id);if(!e)return;editId=id;editChklist={...(e.checklist||{})};editParkPay=e.parkPay||'unpaid';editWashPay=e.washPay||'unpaid';editBookedOut=null;document.getElementById('editSub').textContent=TI[e.type]+' '+TL[e.type]+' · '+e.plate;let tf='';if(e.type==='visitor')tf=`<div class="f"><label class="req">Driver / Visitor Name</label><input id="e-driver" value="${esc(e.driver)}"></div><div class="f"><label>Company</label><input id="e-company" value="${esc(e.company)}"></div><div class="fr"><div class="f"><label>Contact</label><input id="e-contact" value="${esc(e.contact)}"></div><div class="f"><label>Reason</label><input id="e-reason" value="${esc(e.reason)}"></div></div><div class="f"><label>Trailer Reg</label><input id="e-tr" class="plate" value="${esc(e.trailerReg)}" oninput="this.value=this.value.toUpperCase()"></div>`;if(e.type==='company')tf=`<div class="f"><label class="req">Driver Name</label><input id="e-driver" value="${esc(e.driver)}"></div><div class="f"><label>Reason</label><input id="e-reason" value="${esc(e.reason)}"></div><div class="fr"><div class="f"><label>KM Out</label><input id="e-kmout" type="number" value="${esc(e.kmOut)}"></div><div class="f"><label>KM In</label><input id="e-kmin" type="number" value="${esc(e.kmIn)}"></div></div><div class="f"><label>Trailer Reg</label><input id="e-tr" class="plate" value="${esc(e.trailerReg)}" oninput="this.value=this.value.toUpperCase()"></div>`;if(e.type==='truck')tf=`<div class="f"><label class="req">Driver Name</label><input id="e-driver" value="${esc(e.driver)}"></div><div class="f"><label>Company</label><input id="e-company" value="${esc(e.company)}"></div><div class="f"><label>Contact</label><input id="e-contact" value="${esc(e.contact)}"></div><div class="f"><label>Trailer Reg</label><input id="e-tr" class="plate" value="${esc(e.trailerReg)}" oninput="this.value=this.value.toUpperCase()"></div><div class="esec">💳 Payment</div><div class="f"><label>Parking</label><div class="prow"><div class="popt ppaid ${editParkPay==='paid'?'op':''}" id="ep-pkPd" onclick="setEditPay('park','paid')">✓ Paid</div><div class="popt punpaid ${editParkPay==='unpaid'?'ou':''}" id="ep-pkUp" onclick="setEditPay('park','unpaid')">✗ Unpaid</div></div></div><div class="f"><label>Wash</label><div class="prow"><div class="popt ppaid ${editWashPay==='paid'?'op':''}" id="ep-wsPd" onclick="setEditPay('wash','paid')">✓ Paid</div><div class="popt punpaid ${editWashPay==='unpaid'?'ou':''}" id="ep-wsUp" onclick="setEditPay('wash','unpaid')">✗ Unpaid</div></div></div>`;if(e.type==='fleet'){const items=['17m Tarp','17m Top','11m Tarp','11m Top','Spare','Corner Plates','Uprights','Dunnages'];const cntMap={'Corner Plates':'e-cnr','Uprights':'e-upr','Dunnages':'e-dun'};const cntDef={'Corner Plates':'x18','Uprights':'x28','Dunnages':'x10'};const c=e.counts||{};const cvals={cnr:c.cnr||'',upr:c.upr||'',dun:c.dun||''};const chkHtml=items.map(name=>{const on=!!editChklist[name];const cid=cntMap[name];const cval=cid?cvals[cid.replace('e-','')]:'';return`<div class="chi${on?' on':''}" onclick="togEditChk(this,'${name}')"><div class="chb" style="background:${on?'var(--g)':''};border-color:${on?'var(--g)':'#ccc'}">${on?chkSVG():''}</div><div class="chl">${name}</div>${cid?`<div class="chc"><input type="number" id="${cid}" placeholder="${cntDef[name]}" value="${cval}" min="0" max="99" onclick="event.stopPropagation()"></div>`:''}</div>`;}).join('');tf=`<div class="f"><label class="req">Driver Name</label><input id="e-driver" value="${esc(e.driver)}"></div><div class="f"><label>Ops Controller</label><input id="e-ops" value="${esc(e.opsController)}"></div><div class="fr"><div class="f"><label>Fleet #</label><input id="e-fnum" value="${esc(e.fleetNum)}"></div><div class="f"><label>Trailer #</label><input id="e-tnum" value="${esc(e.trailerNum)}"></div></div><div class="f"><label>Truck KM</label><input id="e-km" type="number" value="${esc(e.km)}"></div><div class="esec">📦 Checklist</div><div class="chklist">${chkHtml}</div>`;}
-const toLocal=iso=>{if(!iso)return'';const d=new Date(iso);const pad=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;};
-document.getElementById('editInner').innerHTML=`<div class="esec">🚗 Vehicle & Guard</div><div class="f"><label class="req">Registration Plate</label><input id="e-plate" class="plate" value="${esc(e.plate)}" oninput="this.value=this.value.toUpperCase()"></div><div class="fr"><div class="f"><label>Guard In</label><input id="e-guard" value="${esc(e.guard)}"></div><div class="f"><label>Guard Out</label><input id="e-guardout" value="${esc(e.guardOut)}"></div></div><div class="esec">${TI[e.type]} ${TL[e.type]} Details</div>${tf}<div class="esec">📝 Notes</div><div class="f"><label>Notes (In)</label><textarea id="e-notes">${esc(e.notes)}</textarea></div><div class="f"><label>Notes (Out)</label><textarea id="e-notesout">${esc(e.notesOut)}</textarea></div><div class="esec">⏱ Timestamps</div><div class="f"><label>Book In</label><input type="datetime-local" id="e-timein" value="${toLocal(e.timeIn)}"></div><div class="f"><label>Book Out</label><input type="datetime-local" id="e-timeout" value="${toLocal(e.timeOut)}"></div><div class="chi${e.bookedOut?' on':''}" onclick="togEditOut(this)" style="margin-top:6px"><div class="chb" id="e-boutbox" style="background:${e.bookedOut?'var(--g)':''};border-color:${e.bookedOut?'var(--g)':'#ccc'}">${e.bookedOut?chkSVG():''}</div><div class="chl">Marked as Booked Out</div></div><button class="esave" onclick="saveEdit()">✓ Save Changes</button><button class="cbtn" onclick="closeEdit()">Cancel</button>`;
-document.getElementById('editMod').classList.remove('hide');}
-function togEditChk(el,name){const on=el.classList.toggle('on');const box=el.querySelector('.chb');box.style.background=on?'var(--g)':'';box.style.borderColor=on?'var(--g)':'#ccc';box.innerHTML=on?chkSVG():'';if(on)editChklist[name]=true;else delete editChklist[name];}
+
+function deleteEntry(id){const e=DB.find(x=>x.id===id);if(!e)return;if(!confirm('Delete entry for '+e.plate+'?\nThis cannot be undone.'))return;DB=DB.filter(x=>x.id!==id);save();closeDet();flash('🗑 Deleted — '+e.plate);renderLog(document.getElementById('logSearch').value||'');}
+
+function esc(v){return v?String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+
+function openEdit(id){
+  const e=DB.find(x=>x.id===id);if(!e)return;
+  editId=id;editChklist={...(e.checklist||{})};editParkPay=e.parkPay||'unpaid';editWashPay=e.washPay||'unpaid';editBookedOut=null;
+  document.getElementById('editSub').textContent=TI[e.type]+' '+TL[e.type]+' · '+e.plate;
+  let tf='';
+  if(e.type==='visitor')tf='<div class="f"><label>Driver Name</label><input id="e-driver" value="'+esc(e.driver)+'"></div><div class="f"><label>Company</label><input id="e-company" value="'+esc(e.company)+'"></div><div class="fr"><div class="f"><label>Contact</label><input id="e-contact" value="'+esc(e.contact)+'"></div><div class="f"><label>Reason</label><input id="e-reason" value="'+esc(e.reason)+'"></div></div><div class="f"><label>Trailer Reg</label><input id="e-tr" class="plate" value="'+esc(e.trailerReg)+'" oninput="this.value=this.value.toUpperCase()"></div>';
+  if(e.type==='company')tf='<div class="f"><label>Driver Name</label><input id="e-driver" value="'+esc(e.driver)+'"></div><div class="f"><label>Reason</label><input id="e-reason" value="'+esc(e.reason)+'"></div><div class="fr"><div class="f"><label>KM Out</label><input id="e-kmout" type="number" value="'+esc(e.kmOut)+'"></div><div class="f"><label>KM In</label><input id="e-kmin" type="number" value="'+esc(e.kmIn)+'"></div></div><div class="f"><label>Trailer Reg</label><input id="e-tr" class="plate" value="'+esc(e.trailerReg)+'" oninput="this.value=this.value.toUpperCase()"></div>';
+  if(e.type==='truck'){tf='<div class="f"><label>Driver Name</label><input id="e-driver" value="'+esc(e.driver)+'"></div><div class="f"><label>Company</label><input id="e-company" value="'+esc(e.company)+'"></div><div class="f"><label>Contact</label><input id="e-contact" value="'+esc(e.contact)+'"></div><div class="f"><label>Trailer Reg</label><input id="e-tr" class="plate" value="'+esc(e.trailerReg)+'" oninput="this.value=this.value.toUpperCase()"></div><div class="esec">💳 Payment</div><div class="f"><label>Parking</label><div class="prow"><div class="popt ppaid '+(editParkPay==='paid'?'op':'')+'" id="ep-pkPd" onclick="setEditPay(\'park\',\'paid\')">✓ Paid</div><div class="popt punpaid '+(editParkPay==='unpaid'?'ou':'')+'" id="ep-pkUp" onclick="setEditPay(\'park\',\'unpaid\')">✗ Unpaid</div></div></div><div class="f"><label>Wash</label><div class="prow"><div class="popt ppaid '+(editWashPay==='paid'?'op':'')+'" id="ep-wsPd" onclick="setEditPay(\'wash\',\'paid\')">✓ Paid</div><div class="popt punpaid '+(editWashPay==='unpaid'?'ou':'')+'" id="ep-wsUp" onclick="setEditPay(\'wash\',\'unpaid\')">✗ Unpaid</div></div></div>';}
+  if(e.type==='fleet'){const items=['17m Tarp','17m Top','11m Tarp','11m Top','Spare','Corner Plates','Uprights','Dunnages'];const cntMap={'Corner Plates':'e-cnr','Uprights':'e-upr','Dunnages':'e-dun'};const cntDef={'Corner Plates':'x18','Uprights':'x28','Dunnages':'x10'};const c=e.counts||{};const cvals={cnr:c.cnr||'',upr:c.upr||'',dun:c.dun||''};const chkHtml=items.map(name=>{const on=!!editChklist[name];const cid=cntMap[name];const cval=cid?cvals[cid.replace('e-','')]:'';return'<div class="chi'+(on?' on':'')+'" onclick="togEditChk(this,\''+name+'\')"><div class="chb" style="background:'+(on?'var(--g)':'')+';border-color:'+(on?'var(--g)':'#ccc')+'">'+(on?chkSVG():'')+' </div><div class="chl">'+name+'</div>'+(cid?'<div class="chc"><input type="number" id="'+cid+'" placeholder="'+cntDef[name]+'" value="'+cval+'" min="0" max="99" onclick="event.stopPropagation()"></div>':'')+'</div>';}).join('');tf='<div class="f"><label>Driver Name</label><input id="e-driver" value="'+esc(e.driver)+'"></div><div class="f"><label>Ops Controller</label><input id="e-ops" value="'+esc(e.opsController)+'"></div><div class="fr"><div class="f"><label>Fleet #</label><input id="e-fnum" value="'+esc(e.fleetNum)+'"></div><div class="f"><label>Trailer #</label><input id="e-tnum" value="'+esc(e.trailerNum)+'"></div></div><div class="f"><label>Truck KM</label><input id="e-km" type="number" value="'+esc(e.km)+'"></div><div class="esec">📦 Checklist</div><div class="chklist">'+chkHtml+'</div>';}
+  const toLocal=iso=>{if(!iso)return'';const d=new Date(iso);const pad=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());};
+  document.getElementById('editInner').innerHTML='<div class="esec">🚗 Vehicle & Guard</div><div class="f"><label>Plate</label><input id="e-plate" class="plate" value="'+esc(e.plate)+'" oninput="this.value=this.value.toUpperCase()"></div><div class="fr"><div class="f"><label>Guard In</label><input id="e-guard" value="'+esc(e.guard)+'"></div><div class="f"><label>Guard Out</label><input id="e-guardout" value="'+esc(e.guardOut)+'"></div></div><div class="esec">Details</div>'+tf+'<div class="esec">📝 Notes</div><div class="f"><label>Notes In</label><textarea id="e-notes">'+esc(e.notes)+'</textarea></div><div class="f"><label>Notes Out</label><textarea id="e-notesout">'+esc(e.notesOut)+'</textarea></div><div class="esec">⏱ Timestamps</div><div class="f"><label>Book In</label><input type="datetime-local" id="e-timein" value="'+toLocal(e.timeIn)+'"></div><div class="f"><label>Book Out</label><input type="datetime-local" id="e-timeout" value="'+toLocal(e.timeOut)+'"></div><div class="chi'+(e.bookedOut?' on':'')+'" onclick="togEditOut(this)"><div class="chb" id="e-boutbox" style="background:'+(e.bookedOut?'var(--g)':'')+';border-color:'+(e.bookedOut?'var(--g)':'#ccc')+'">'+(e.bookedOut?chkSVG():'')+' </div><div class="chl">Marked as Booked Out</div></div><button class="esave" onclick="saveEdit()">✓ Save Changes</button><button class="cbtn" onclick="closeEdit()">Cancel</button>';
+  document.getElementById('editMod').classList.remove('hide');
+}
+function togEditChk(el,name){const on=el.classList.toggle('on');const box=el.querySelector('.chb');box.style.background=on?'var(--g)':'';box.style.borderColor=on?'var(--g)':'#ccc';box.innerHTML=on?chkSVG()+' ':' ';if(on)editChklist[name]=true;else delete editChklist[name];}
 function setEditPay(w,s){if(w==='park')editParkPay=s;else editWashPay=s;const pd='ep-'+(w==='park'?'pkPd':'wsPd');const up='ep-'+(w==='park'?'pkUp':'wsUp');document.getElementById(pd).className='popt ppaid'+(s==='paid'?' op':'');document.getElementById(up).className='popt punpaid'+(s==='unpaid'?' ou':'');}
-function togEditOut(el){const box=document.getElementById('e-boutbox');const e=DB.find(x=>x.id===editId);editBookedOut=editBookedOut===null?!e.bookedOut:!editBookedOut;const on=editBookedOut;box.style.background=on?'var(--g)':'';box.style.borderColor=on?'var(--g)':'#ccc';box.innerHTML=on?chkSVG():'';el.classList.toggle('on',on);}
+function togEditOut(el){const box=document.getElementById('e-boutbox');const e=DB.find(x=>x.id===editId);editBookedOut=editBookedOut===null?!e.bookedOut:!editBookedOut;const on=editBookedOut;box.style.background=on?'var(--g)':'';box.style.borderColor=on?'var(--g)':'#ccc';box.innerHTML=on?chkSVG()+' ':' ';el.classList.toggle('on',on);}
 function gei(id){const el=document.getElementById(id);return el?el.value.trim():'';}
-function saveEdit(){const e=DB.find(x=>x.id===editId);if(!e)return;const plate=gei('e-plate').toUpperCase();if(!plate){flash('⚠ Plate cannot be empty');return;}e.plate=plate;e.guard=gei('e-guard')||e.guard;e.guardOut=gei('e-guardout')||e.guardOut;e.notes=gei('e-notes');e.notesOut=gei('e-notesout');const tIn=gei('e-timein');const tOut=gei('e-timeout');if(tIn)e.timeIn=new Date(tIn).toISOString();if(tOut)e.timeOut=new Date(tOut).toISOString();if(editBookedOut!==null)e.bookedOut=editBookedOut;if(e.type==='visitor'){e.driver=gei('e-driver')||e.driver;e.company=gei('e-company');e.contact=gei('e-contact');e.reason=gei('e-reason');e.trailerReg=gei('e-tr')||'';}if(e.type==='company'){e.driver=gei('e-driver')||e.driver;e.reason=gei('e-reason');e.kmOut=gei('e-kmout');e.kmIn=gei('e-kmin');e.trailerReg=gei('e-tr')||'';}if(e.type==='truck'){e.driver=gei('e-driver')||e.driver;e.company=gei('e-company');e.contact=gei('e-contact');e.trailerReg=gei('e-tr')||'';e.parkPay=editParkPay;e.washPay=editWashPay;}if(e.type==='fleet'){e.driver=gei('e-driver')||e.driver;e.opsController=gei('e-ops');e.fleetNum=gei('e-fnum');e.trailerNum=gei('e-tnum');e.km=gei('e-km');e.checklist={...editChklist};e.counts={cnr:gei('e-cnr'),upr:gei('e-upr'),dun:gei('e-dun')};}save();editBookedOut=null;closeEdit();flash('✓ Entry updated — '+plate);renderLog(document.getElementById('logSearch')?document.getElementById('logSearch').value||'':'');}
+function saveEdit(){const e=DB.find(x=>x.id===editId);if(!e)return;const plate=gei('e-plate').toUpperCase();if(!plate){flash('⚠ Plate cannot be empty');return;}e.plate=plate;e.guard=gei('e-guard')||e.guard;e.guardOut=gei('e-guardout')||e.guardOut;e.notes=gei('e-notes');e.notesOut=gei('e-notesout');const tIn=gei('e-timein');const tOut=gei('e-timeout');if(tIn)e.timeIn=new Date(tIn).toISOString();if(tOut)e.timeOut=new Date(tOut).toISOString();if(editBookedOut!==null)e.bookedOut=editBookedOut;if(e.type==='visitor'){e.driver=gei('e-driver')||e.driver;e.company=gei('e-company');e.contact=gei('e-contact');e.reason=gei('e-reason');e.trailerReg=gei('e-tr')||'';}if(e.type==='company'){e.driver=gei('e-driver')||e.driver;e.reason=gei('e-reason');e.kmOut=gei('e-kmout');e.kmIn=gei('e-kmin');e.trailerReg=gei('e-tr')||'';}if(e.type==='truck'){e.driver=gei('e-driver')||e.driver;e.company=gei('e-company');e.contact=gei('e-contact');e.trailerReg=gei('e-tr')||'';e.parkPay=editParkPay;e.washPay=editWashPay;}if(e.type==='fleet'){e.driver=gei('e-driver')||e.driver;e.opsController=gei('e-ops');e.fleetNum=gei('e-fnum');e.trailerNum=gei('e-tnum');e.km=gei('e-km');e.checklist={...editChklist};e.counts={cnr:gei('e-cnr'),upr:gei('e-upr'),dun:gei('e-dun')};}save();editBookedOut=null;closeEdit();flash('✓ Updated — '+plate);renderLog(document.getElementById('logSearch').value||'');}
 function closeEdit(){document.getElementById('editMod').classList.add('hide');editBookedOut=null;}
-function renderYard(){const inY=DB.filter(e=>e.timeIn&&!e.bookedOut);const list=document.getElementById('yardList');if(!inY.length){list.innerHTML='<div class="empty">🎉 No vehicles in yard</div>';return;}list.innerHTML=inY.map(e=>{const d=dAgo(e.timeIn),h=hAgo(e.timeIn);const dur=d>0?`${d}d ${h%24}h`:`${h}h`;return`<div class="ycard" onclick="openYardPay(${e.id})"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:24px">${TI[e.type]}</span><div style="flex:1"><div style="font-size:15px;font-weight:800;font-family:monospace;letter-spacing:1.5px">${e.plate}${e.trailerReg?' + '+e.trailerReg:''}</div><div style="font-size:11px;color:#888">${e.driver||''}${e.company?' · '+e.company:''}</div><div style="font-size:11px;color:#aaa">In: ${fDT(e.timeIn)}</div></div><div style="font-size:11px;font-weight:700;color:var(--am)">⏱ ${dur}</div></div><div style="display:flex;gap:6px;margin-top:7px">${e.type==='truck'?`<span class="bdg ${e.parkPay==='paid'?'bpaid':'bunpaid'}">Parking: ${e.parkPay==='paid'?'✓ Paid':'✗ Unpaid'}</span>`:''}${e.type==='truck'?`<span class="bdg ${e.washPay==='paid'?'bpaid':'bunpaid'}">Wash: ${e.washPay==='paid'?'✓ Paid':'✗ Unpaid'}</span>`:''}${e.type!=='truck'?`<span class="bdg bin">In Yard</span>`:''}</div></div>`;}).join('');}
-function openYardPay(id){const e=DB.find(x=>x.id===id);if(!e)return;if(e.type!=='truck'){openDet(id);return;}editYardId=id;document.getElementById('payInner').innerHTML=`<div class="mt">${e.plate}</div><div class="ms">${e.driver||''} · ${fDT(e.timeIn)}</div><div class="msec">Parking Payment</div><div class="prow" style="margin-bottom:12px"><div class="popt ppaid ${e.parkPay==='paid'?'op':''}" id="yp-pkPd" onclick="updYardPay('park','paid')">✓ Paid</div><div class="popt punpaid ${e.parkPay!=='paid'?'ou':''}" id="yp-pkUp" onclick="updYardPay('park','unpaid')">✗ Unpaid</div></div><div class="msec">Wash Payment</div><div class="prow" style="margin-bottom:14px"><div class="popt ppaid ${e.washPay==='paid'?'op':''}" id="yp-wsPd" onclick="updYardPay('wash','paid')">✓ Paid</div><div class="popt punpaid ${e.washPay!=='paid'?'ou':''}" id="yp-wsUp" onclick="updYardPay('wash','unpaid')">✗ Unpaid</div></div><button class="cbtn" onclick="closePay()">Close</button>`;document.getElementById('payMod').classList.remove('hide');}
+
+function renderYard(){const inY=DB.filter(e=>e.timeIn&&!e.bookedOut);const list=document.getElementById('yardList');if(!inY.length){list.innerHTML='<div class="empty">🎉 No vehicles in yard</div>';return;}list.innerHTML=inY.map(e=>{const d=dAgo(e.timeIn),h=hAgo(e.timeIn);const dur=d>0?d+'d '+(h%24)+'h':h+'h';return'<div class="ycard" onclick="openYardPay('+e.id+')"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:24px">'+TI[e.type]+'</span><div style="flex:1"><div style="font-size:15px;font-weight:800;font-family:monospace;letter-spacing:1.5px">'+e.plate+(e.trailerReg?' + '+e.trailerReg:'')+'</div><div style="font-size:11px;color:#888">'+(e.driver||'')+(e.company?' · '+e.company:'')+'</div><div style="font-size:11px;color:#aaa">In: '+fDT(e.timeIn)+'</div></div><div style="font-size:11px;font-weight:700;color:var(--am)">⏱ '+dur+'</div></div><div style="display:flex;gap:6px;margin-top:7px">'+(e.type==='truck'?'<span class="bdg '+(e.parkPay==='paid'?'bpaid':'bunpaid')+'">Parking: '+(e.parkPay==='paid'?'✓ Paid':'✗ Unpaid')+'</span>':'')+(e.type==='truck'?'<span class="bdg '+(e.washPay==='paid'?'bpaid':'bunpaid')+'">Wash: '+(e.washPay==='paid'?'✓ Paid':'✗ Unpaid')+'</span>':'')+(e.type!=='truck'?'<span class="bdg bin">In Yard</span>':'')+'</div></div>';}).join('');}
+function openYardPay(id){const e=DB.find(x=>x.id===id);if(!e)return;if(e.type!=='truck'){openDet(id);return;}editYardId=id;document.getElementById('payInner').innerHTML='<div class="mt">'+e.plate+'</div><div class="ms">'+(e.driver||'')+' · '+fDT(e.timeIn)+'</div><div class="msec">Parking Payment</div><div class="prow" style="margin-bottom:12px"><div class="popt ppaid '+(e.parkPay==='paid'?'op':'')+'" id="yp-pkPd" onclick="updYardPay(\'park\',\'paid\')">✓ Paid</div><div class="popt punpaid '+(e.parkPay!=='paid'?'ou':'')+'" id="yp-pkUp" onclick="updYardPay(\'park\',\'unpaid\')">✗ Unpaid</div></div><div class="msec">Wash Payment</div><div class="prow" style="margin-bottom:14px"><div class="popt ppaid '+(e.washPay==='paid'?'op':'')+'" id="yp-wsPd" onclick="updYardPay(\'wash\',\'paid\')">✓ Paid</div><div class="popt punpaid '+(e.washPay!=='paid'?'ou':'')+'" id="yp-wsUp" onclick="updYardPay(\'wash\',\'unpaid\')">✗ Unpaid</div></div><button class="cbtn" onclick="closePay()">Close</button>';document.getElementById('payMod').classList.remove('hide');}
 function updYardPay(w,s){const e=DB.find(x=>x.id===editYardId);if(!e)return;if(w==='park')e.parkPay=s;else e.washPay=s;save();const pd='yp-'+(w==='park'?'pkPd':'wsPd');const up='yp-'+(w==='park'?'pkUp':'wsUp');document.getElementById(pd).className='popt ppaid'+(s==='paid'?' op':'');document.getElementById(up).className='popt punpaid'+(s==='unpaid'?' ou':'');flash('✓ Payment updated');renderYard();}
 function closePay(){document.getElementById('payMod').classList.add('hide');}
-function renderStats(){const today=new Date().toDateString();const todayE=DB.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===today);const inY=DB.filter(e=>e.timeIn&&!e.bookedOut);const photos=DB.reduce((a,e)=>a+(e.photos||[]).length+(e.extraPhotos||[]).length,0);document.getElementById('s0').textContent=todayE.length;document.getElementById('s1').textContent=DB.length;document.getElementById('s2').textContent=inY.length;document.getElementById('s3').textContent=photos;const counts={};DB.forEach(e=>counts[e.type]=(counts[e.type]||0)+1);const mx=Math.max(...Object.values(counts),1);document.getElementById('typechart').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`<div class="bar"><div class="brt"><span>${TI[t]} ${TL[t]||t}</span><span style="font-weight:700">${c}</span></div><div class="brb"><div class="brf" style="width:${Math.round(c/mx*100)}%"></div></div></div>`).join('')||'<p style="color:#ccc;font-size:13px">No data yet</p>';document.getElementById('recact').innerHTML=DB.slice(0,10).map(e=>{const inYard=e.timeIn&&!e.bookedOut;return`<div class="ra-item"><span style="font-size:20px">${TI[e.type]}</span><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:800;font-family:monospace">${e.plate}</div><div style="font-size:11px;color:#888">${TL[e.type]} · ${e.driver||'—'}</div><div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">${e.timeIn?`<span style="font-size:10px;background:#e1f5ee;color:#0f6e56;padding:2px 6px;border-radius:6px;font-weight:600">⬇ ${fDT(e.timeIn)}</span>`:''}${e.bookedOut&&e.timeOut?`<span style="font-size:10px;background:var(--rl);color:var(--rd);padding:2px 6px;border-radius:6px;font-weight:600">⬆ ${fDT(e.timeOut)}</span>`:''}${inYard?`<span style="font-size:10px;background:var(--al);color:var(--am);padding:2px 6px;border-radius:6px;font-weight:600">In Yard</span>`:''}</div></div><div style="font-size:10px;color:#bbb">${e.guard||''}</div></div>`;}).join('')||'<p style="color:#ccc;font-size:13px">No entries yet</p>';}
-function shareLog(){const today=new Date().toDateString();const todayE=DB.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===today);if(!todayE.length){flash('⚠ No entries today to share');return;}let msg='*GATE LOG — '+new Date().toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'})+'*\n\n';todayE.forEach(e=>{msg+=`*${e.plate}* — ${TL[e.type]}\n`;if(e.driver)msg+=`Driver: ${e.driver}\n`;if(e.company)msg+=`Company: ${e.company}\n`;if(e.timeIn)msg+=`⬇ In: ${fDT(e.timeIn)}\n`;if(e.timeOut)msg+=`⬆ Out: ${fDT(e.timeOut)}\n`;if(e.guard)msg+=`Guard: ${e.guard}\n`;msg+='\n';});msg+=`_Total: ${todayE.length} entries_`;window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');}
-function showExport(){expFilt={type:'all',date:'all'};document.querySelectorAll('#expTF .pill').forEach((p,i)=>p.classList.toggle('on',i===0));document.querySelectorAll('#expDF .pill').forEach((p,i)=>p.classList.toggle('on',i===0));document.getElementById('custDR').style.display='none';updExpPrev();document.getElementById('expMod').classList.remove('hide');}
+
+function renderStats(){const today=new Date().toDateString();const todayE=DB.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===today);const inY=DB.filter(e=>e.timeIn&&!e.bookedOut);const photos=DB.reduce((a,e)=>a+(e.photos||[]).length+(e.extraPhotos||[]).length,0);document.getElementById('s0').textContent=todayE.length;document.getElementById('s1').textContent=DB.length;document.getElementById('s2').textContent=inY.length;document.getElementById('s3').textContent=photos;const counts={};DB.forEach(e=>counts[e.type]=(counts[e.type]||0)+1);const mx=Math.max(...Object.values(counts),1);document.getElementById('typechart').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([t,c])=>'<div class="bar"><div class="brt"><span>'+TI[t]+' '+TL[t]+'</span><span style="font-weight:700">'+c+'</span></div><div class="brb"><div class="brf" style="width:'+Math.round(c/mx*100)+'%"></div></div></div>').join('')||'<p style="color:#ccc;font-size:13px">No data yet</p>';document.getElementById('recact').innerHTML=DB.slice(0,10).map(e=>{const inYard=e.timeIn&&!e.bookedOut;return'<div class="ra-item"><span style="font-size:20px">'+TI[e.type]+'</span><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:800;font-family:monospace">'+e.plate+'</div><div style="font-size:11px;color:#888">'+TL[e.type]+' · '+(e.driver||'—')+'</div><div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">'+(e.timeIn?'<span style="font-size:10px;background:#e1f5ee;color:#0f6e56;padding:2px 6px;border-radius:6px;font-weight:600">⬇ '+fDT(e.timeIn)+'</span>':'')+(e.bookedOut&&e.timeOut?'<span style="font-size:10px;background:var(--rl);color:var(--rd);padding:2px 6px;border-radius:6px;font-weight:600">⬆ '+fDT(e.timeOut)+'</span>':'')+(inYard?'<span style="font-size:10px;background:var(--al);color:var(--am);padding:2px 6px;border-radius:6px;font-weight:600">In Yard</span>':'')+'</div></div><div style="font-size:10px;color:#bbb">'+(e.guard||'')+'</div></div>';}).join('')||'<p style="color:#ccc;font-size:13px">No entries yet</p>';}
+
+function shareLog(){const today=new Date().toDateString();const todayE=DB.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===today);if(!todayE.length){flash('⚠ No entries today to share');return;}let msg='*GATE LOG — '+new Date().toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'})+'*\n\n';todayE.forEach(e=>{msg+='*'+e.plate+'* — '+TL[e.type]+'\n';if(e.driver)msg+='Driver: '+e.driver+'\n';if(e.company)msg+='Company: '+e.company+'\n';if(e.timeIn)msg+='⬇ In: '+fDT(e.timeIn)+'\n';if(e.timeOut)msg+='⬆ Out: '+fDT(e.timeOut)+'\n';if(e.guard)msg+='Guard: '+e.guard+'\n';msg+='\n';});msg+='_Total: '+todayE.length+' entries_';window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');}
+
+function showExport(){expFilt={type:'all',date:'all'};document.querySelectorAll('#expTF .pill').forEach((p,i)=>p.classList.toggle('on',i===0));document.querySelectorAll('#expDF .pill').forEach((p,i)=>p.classList.toggle('on',i===0));updExpPrev();document.getElementById('expMod').classList.remove('hide');}
 function closeExport(){document.getElementById('expMod').classList.add('hide');}
-function setExpF(el,w,v){expFilt[w]=v;const g=w==='type'?'expTF':'expDF';document.querySelectorAll('#'+g+' .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');if(w==='date')document.getElementById('custDR').style.display=v==='custom'?'block':'none';updExpPrev();}
-function getExpData(){let data=[...DB];if(expFilt.type!=='all')data=data.filter(e=>e.type===expFilt.type);const now=new Date();if(expFilt.date==='today'){const t=now.toDateString();data=data.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===t);}else if(expFilt.date==='week'){const w=new Date(now);w.setDate(w.getDate()-7);data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)>=w);}else if(expFilt.date==='month'){const m=new Date(now);m.setDate(1);m.setHours(0,0,0,0);data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)>=m);}else if(expFilt.date==='custom'){const f=document.getElementById('expFrom').value,t=document.getElementById('expTo').value;if(f)data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)>=new Date(f));if(t)data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)<=new Date(t+'T23:59:59'));}return data;}
-function updExpPrev(){const d=getExpData();document.getElementById('expPrev').innerHTML=`<strong>${d.length}</strong> record${d.length!==1?'s':''} will be exported`;}
-function ce(v){if(v===null||v===undefined)return'';const s=String(v).replace(/"/g,'""');return s.includes(',')||s.includes('"')||s.includes('\n')?`"${s}"`:s;}
-function doCSV(){const data=getExpData();if(!data.length){flash('⚠ No records');return;}const hdrs=['ID','Type','Plate','Trailer Reg','Driver','Company','Contact','Reason','KM Out','KM In','Parking Pay','Wash Pay','Ops Controller','Fleet #','Trailer #','Truck KM','Equipment','Cnr Plates','Uprights','Dunnages','Book In Date','Book In Time','Book Out Date','Book Out Time','Time In Yard (hrs)','In Yard','Guard In','Guard Out','Notes','Photos'];const rows=data.map(e=>{const iDT=e.timeIn?new Date(e.timeIn):null;const oDT=e.timeOut?new Date(e.timeOut):null;const inY=e.timeIn&&!e.bookedOut;const yh=iDT?Math.round((Date.now()-iDT.getTime())/3600000):'';const ck=Object.keys(e.checklist||{}).join('; ');const c=e.counts||{};const ph=(e.photos||[]).length+(e.extraPhotos||[]).length;return[e.id,TL[e.type]||e.type,e.plate,e.trailerReg||'',e.driver||'',e.company||'',e.contact||'',e.reason||'',e.kmOut||'',e.kmIn||'',e.type==='truck'?(e.parkPay==='paid'?'Paid':'Unpaid'):'',e.type==='truck'?(e.washPay==='paid'?'Paid':'Unpaid'):'',e.opsController||'',e.fleetNum||'',e.trailerNum||'',e.km||'',ck,c.cnr||'',c.upr||'',c.dun||'',iDT?iDT.toLocaleDateString('en-ZA'):'',iDT?iDT.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}):'',oDT?oDT.toLocaleDateString('en-ZA'):'',oDT?oDT.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}):'',inY?yh:'',inY?'Yes':'No',e.guard||'',e.guardOut||'',e.notes||'',ph].map(ce).join(',');});const csv='\uFEFF'+[hdrs.map(ce).join(','),...rows].join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='gate_log_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);closeExport();flash('✓ CSV downloaded');}
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwQcoaK2aYMekM_BECK8SNOjHLsx6GZbABd3IOmlPCLld6dEdtanOWfO8QPAdXdnlco/exec';
+function setExpF(el,w,v){expFilt[w]=v;const g=w==='type'?'expTF':'expDF';document.querySelectorAll('#'+g+' .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');updExpPrev();}
+function getExpData(){let data=[...DB];if(expFilt.type!=='all')data=data.filter(e=>e.type===expFilt.type);const now=new Date();if(expFilt.date==='today'){const t=now.toDateString();data=data.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===t);}else if(expFilt.date==='week'){const w=new Date(now);w.setDate(w.getDate()-7);data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)>=w);}else if(expFilt.date==='month'){const m=new Date(now);m.setDate(1);m.setHours(0,0,0,0);data=data.filter(e=>new Date(e.timeIn||e.timeOut||0)>=m);}return data;}
+function updExpPrev(){const d=getExpData();document.getElementById('expPrev').innerHTML='<strong>'+d.length+'</strong> record'+(d.length!==1?'s':'')+' will be exported';}
+function ce(v){if(v===null||v===undefined)return'';const s=String(v).replace(/"/g,'""');return s.includes(',')||s.includes('"')||s.includes('\n')?'"'+s+'"':s;}
+function doCSV(){const data=getExpData();if(!data.length){flash('⚠ No records');return;}const hdrs=['ID','Type','Plate','Trailer Reg','Driver','Company','Contact','Reason','KM Out','KM In','Parking Pay','Wash Pay','Ops Controller','Fleet #','Trailer #','Truck KM','Equipment','Cnr Plates','Uprights','Dunnages','Book In Date','Book In Time','Book Out Date','Book Out Time','In Yard','Guard In','Guard Out','Notes','Photos'];const rows=data.map(e=>{const iDT=e.timeIn?new Date(e.timeIn):null;const oDT=e.timeOut?new Date(e.timeOut):null;const inY=e.timeIn&&!e.bookedOut;const ck=Object.keys(e.checklist||{}).join('; ');const c=e.counts||{};const ph=(e.photos||[]).length+(e.extraPhotos||[]).length;return[e.id,TL[e.type]||e.type,e.plate,e.trailerReg||'',e.driver||'',e.company||'',e.contact||'',e.reason||'',e.kmOut||'',e.kmIn||'',e.type==='truck'?(e.parkPay==='paid'?'Paid':'Unpaid'):'',e.type==='truck'?(e.washPay==='paid'?'Paid':'Unpaid'):'',e.opsController||'',e.fleetNum||'',e.trailerNum||'',e.km||'',ck,c.cnr||'',c.upr||'',c.dun||'',iDT?iDT.toLocaleDateString('en-ZA'):'',iDT?iDT.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}):'',oDT?oDT.toLocaleDateString('en-ZA'):'',oDT?oDT.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}):'',inY?'Yes':'No',e.guard||'',e.guardOut||'',e.notes||'',ph].map(ce).join(',');});const csv='\uFEFF'+[hdrs.map(ce).join(','),...rows].join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='gate_log_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);closeExport();flash('✓ CSV downloaded');}
 
-async function syncToSheet() {
-  if (!DB.length) { flash('⚠ No entries to sync'); return; }
-  const btn = document.getElementById('syncBtn');
-  const status = document.getElementById('syncStatus');
-  btn.className = 'sync-btn syncing';
-  btn.textContent = '⏳ Syncing...';
-  btn.disabled = true;
-  status.style.display = 'block';
-  status.style.background = '#e6f1fb';
-  status.style.color = '#185fa5';
-  status.textContent = 'Connecting to Google Sheet...';
-  try {
-    // Strip photos to keep payload small — sheet only stores text data
-    const payload = DB.map(e => {
-      const {photos, extraPhotos, ...rest} = e;
-      return {...rest, photosCount: (photos||[]).length + (extraPhotos||[]).length};
-    });
-    const res = await fetch(SHEET_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {'Content-Type': 'text/plain'}
-    });
-    const json = await res.json();
-    if (json.ok) {
-      status.style.background = '#e1f5ee';
-      status.style.color = '#0f6e56';
-      status.textContent = '✓ Synced ' + DB.length + ' records to Google Sheet!';
-      flash('✓ Sheet updated!');
-      localStorage.setItem('gac_last_sync', new Date().toISOString());
-    } else {
-      throw new Error(json.error || 'Unknown error');
-    }
-  } catch (err) {
-    status.style.background = '#fcebeb';
-    status.style.color = '#a32d2d';
-    status.textContent = '⚠ Sync failed — check internet connection';
-    flash('⚠ Sync failed');
-  }
-  btn.className = 'sync-btn';
-  btn.innerHTML = '☁️ Sync';
-  btn.disabled = false;
-  setTimeout(() => { status.style.display = 'none'; }, 4000);
+async function syncToSheet(){
+  if(!DB.length){flash('⚠ No entries to sync');return;}
+  const btn=document.getElementById('syncBtn');
+  const msg=document.getElementById('syncMsg');
+  btn.textContent='⏳ Syncing...';btn.disabled=true;
+  msg.style.display='block';msg.style.background='#e6f1fb';msg.style.color='#185fa5';msg.textContent='Connecting to Google Sheet...';
+  try{
+    const payload=DB.map(e=>{const {photos,extraPhotos,...rest}=e;return{...rest,photosCount:(photos||[]).length+(extraPhotos||[]).length};});
+    const res=await fetch(SHEET_URL,{method:'POST',body:JSON.stringify(payload),headers:{'Content-Type':'text/plain'}});
+    const json=await res.json();
+    if(json.ok){msg.style.background='#e1f5ee';msg.style.color='#0f6e56';msg.textContent='✓ Synced '+DB.length+' records to Google Sheet!';flash('✓ Sheet updated!');}
+    else throw new Error(json.error||'Unknown error');
+  }catch(err){msg.style.background='#fcebeb';msg.style.color='#a32d2d';msg.textContent='⚠ Sync failed — check internet connection';flash('⚠ Sync failed');}
+  btn.textContent='☁️ Sync';btn.disabled=false;
+  setTimeout(()=>{msg.style.display='none';},4000);
 }
 
-// Auto-sync after every new entry
-const _origSave = save;
-function saveAndSync() {
-  _origSave();
-}
-const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{const data=ev.target.result;localStorage.setItem('gac_logo',data);applyLogo(data);flash('✓ Logo updated');};reader.readAsDataURL(file);e.target.value='';}
+function uploadLogo(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{localStorage.setItem('gac_logo',ev.target.result);applyLogo(ev.target.result);flash('✓ Logo updated');};reader.readAsDataURL(file);e.target.value='';}
 function applyLogo(data){const img=document.getElementById('logoImg');const svg=document.getElementById('logoSvg');if(data){img.src=data;img.style.display='block';svg.style.display='none';}else{img.style.display='none';svg.style.display='block';}}
-let deferredPrompt=null;
-const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-const isAndroid=/android/i.test(navigator.userAgent);
-const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!isStandalone&&!localStorage.getItem('gac_install_dismissed'))document.getElementById('installBanner').style.display='flex';});
-function doInstall(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.then(r=>{document.getElementById('installBanner').style.display='none';if(r.outcome==='accepted')flash('✓ App installed!');deferredPrompt=null;});}
-window.addEventListener('appinstalled',()=>{document.getElementById('installBanner').style.display='none';deferredPrompt=null;});
-function dismissManual(){document.getElementById('manualBanner').style.display='none';localStorage.setItem('gac_install_dismissed','1');}
-window.addEventListener('load',()=>{if(isStandalone||localStorage.getItem('gac_install_dismissed'))return;setTimeout(()=>{if(deferredPrompt)return;const txt=document.getElementById('manualText');const banner=document.getElementById('manualBanner');if(isIOS){txt.innerHTML='1. Tap the <strong>Share button ↑</strong> at the bottom of Safari<br>2. Tap <strong>"Add to Home Screen"</strong><br>3. Tap <strong>Add</strong>';banner.style.display='block';}else if(isAndroid){txt.innerHTML='1. Tap the <strong>3-dot menu ⋮</strong> in Chrome (top right)<br>2. Tap <strong>"Add to Home screen"</strong><br>3. Tap <strong>Add</strong>';banner.style.display='block';}},3500);});
-drawStrip('mainStrip',mainPhotos,'main');drawStrip('extraStrip',extraPhotos,'extra');
-const savedLogo=localStorage.getItem('gac_logo');if(savedLogo)applyLogo(savedLogo);
+
+drawStrip('mainStrip',mainPhotos,'main');
+drawStrip('extraStrip',extraPhotos,'extra');
+const savedLogo=localStorage.getItem('gac_logo');
+if(savedLogo)applyLogo(savedLogo);
 </script>
 </body>
 </html>
