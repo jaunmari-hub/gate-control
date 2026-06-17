@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0057)file:///C:/Users/jaunmariv.FST/Downloads/index%20(7).html -->
+<!-- saved from url=(0057)file:///C:/Users/jaunmariv.FST/Downloads/index%20(8).html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -151,7 +151,7 @@ input[type=file]{display:none}
 </div>
 
 <div id="pg-new" class="pg on">
-  <div class="clk"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span id="clk">Wed, 17 Jun 2026  13:49:18</span></div>
+  <div class="clk"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span id="clk">Wed, 17 Jun 2026  14:47:13</span></div>
   <div class="iotog">
     <button class="iob in on" id="ioIn" onclick="setIO(&#39;in&#39;)">⬇ BOOK IN</button>
     <button class="iob out" id="ioOut" onclick="setIO(&#39;out&#39;)">⬆ BOOK OUT</button>
@@ -301,6 +301,7 @@ input[type=file]{display:none}
     <div class="sc"><div class="sn" id="s2">0</div><div class="sl">In yard now</div></div>
     <div class="sc"><div class="sn" id="s3">0</div><div class="sl">Photos taken</div></div>
   </div>
+  <div class="card"><div class="ct">📱 Phone Storage Used</div><div id="storageBar"></div></div>
   <div class="card"><div class="ct">By Entry Type</div><div id="typechart"></div></div>
   <div class="card" style="margin-top:10px"><div class="ct">Recent Activity</div><div id="recact"></div></div>
 </div>
@@ -351,7 +352,16 @@ input[type=file]{display:none}
 <script>
 const SHEET_URL='https://script.google.com/macros/s/AKfycbyGrshzAn6byD4SM0Rzt33cYFEG3ewyyJNW6zE7qwhFIorUNS0vfrsqi9ykO3SS8oj2/exec';
 let DB=[];try{DB=JSON.parse(localStorage.getItem('gac3')||'[]');}catch(e){}
-function save(){try{localStorage.setItem('gac3',JSON.stringify(DB.slice(-600)));}catch(e){}}
+function save(){
+  try{
+    localStorage.setItem('gac3',JSON.stringify(DB));
+    return true;
+  }catch(err){
+    flash('⚠ STORAGE FULL! Last entry may not have saved. Sync now & contact support.');
+    try{ if(navigator.vibrate) navigator.vibrate([200,100,200]); }catch(e){}
+    return false;
+  }
+}
 let curType='visitor',curIO='in',mainPhotos=[],extraPhotos=[],trTog={v:false,c:false,ts:false},parkPay='unpaid',washPay='unpaid',chklist={},logFilt='all',expFilt={type:'all',date:'all'},editYardId=null,editId=null,editChklist={},editParkPay='unpaid',editWashPay='unpaid',editBookedOut=null;
 const TL={visitor:'Visitor',company:'Company Vehicle',truck:'Truck Stop',fleet:'Fleet Equipment'};
 const TI={visitor:'👤',company:'🏢',truck:'🚛',fleet:'⚙️'};
@@ -375,7 +385,22 @@ function chkSVG(){return'<svg width="12" height="12" fill="none" stroke="white" 
 function togTrailer(p){trTog[p]=!trTog[p];const on=trTog[p];const box=document.getElementById(p+'TrBox');box.style.background=on?'var(--g)':'';box.style.borderColor=on?'var(--g)':'#ccc';box.innerHTML=on?chkSVG():'';document.getElementById(p+'TrTog').classList.toggle('on',on);document.getElementById(p+'TrF').style.display=on?'':'none';}
 function setPay(w,s){if(w==='park')parkPay=s;else washPay=s;const pd=w==='park'?'pkPd':'wsPd';const up=w==='park'?'pkUp':'wsUp';document.getElementById(pd).className='popt ppaid'+(s==='paid'?' op':'');document.getElementById(up).className='popt punpaid'+(s==='unpaid'?' ou':'');}
 function togChk(el,name){const on=el.classList.toggle('on');const box=el.querySelector('.chb');box.style.background=on?'var(--g)':'';box.style.borderColor=on?'var(--g)':'#ccc';box.innerHTML=on?chkSVG():'';if(on)chklist[name]=true;else delete chklist[name];}
-function addPhoto(e,t){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{if(t==='main'){mainPhotos.push(ev.target.result);drawStrip('mainStrip',mainPhotos,'main');}else{extraPhotos.push(ev.target.result);drawStrip('extraStrip',extraPhotos,'extra');}};r.readAsDataURL(f);e.target.value='';}
+function compressImage(dataUrl, callback){
+  const img = new Image();
+  img.onload = () => {
+    const maxW = 900; // resize down to max 900px wide — plenty for plate/ID readability
+    let w = img.width, h = img.height;
+    if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    callback(canvas.toDataURL('image/jpeg', 0.6)); // 60% quality JPEG — small file, still clear
+  };
+  img.onerror = () => callback(dataUrl); // fallback to original if compression fails
+  img.src = dataUrl;
+}
+function addPhoto(e,t){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{compressImage(ev.target.result, compressed=>{if(t==='main'){mainPhotos.push(compressed);drawStrip('mainStrip',mainPhotos,'main');}else{extraPhotos.push(compressed);drawStrip('extraStrip',extraPhotos,'extra');}});};r.readAsDataURL(f);e.target.value='';}
 function drawStrip(id,arr,t){const el=document.getElementById(id);if(!el)return;el.innerHTML='';arr.forEach((p,i)=>{const img=document.createElement('img');img.src=p;img.className='pthumb';img.onclick=()=>{if(confirm('Remove?')){arr.splice(i,1);drawStrip(id,arr,t);}};el.appendChild(img);});const a=document.createElement('div');a.className='padd';a.onclick=()=>document.getElementById(t==='main'?'mainFile':'extraFile').click();a.innerHTML='<svg width="20" height="20" fill="none" stroke="#bbb" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Add</span>';el.appendChild(a);}
 function checkYard(){const plate=(document.getElementById('reg').value||'').toUpperCase().trim();const al=document.getElementById('yalert');if(!plate){al.style.display='none';return;}const found=DB.find(e=>e.plate===plate&&e.timeIn&&!e.bookedOut);if(found&&curIO==='out'){const hrs=Math.round((Date.now()-new Date(found.timeIn).getTime())/3600000);document.getElementById('yalertMsg').textContent='In yard for '+hrs+'h ('+( found.driver||'unknown')+'). Recording book-out.';al.style.display='flex';}else al.style.display='none';}
 function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
@@ -473,7 +498,14 @@ function openYardPay(id){const e=DB.find(x=>x.id===id);if(!e)return;if(e.type!==
 function updYardPay(w,s){const e=DB.find(x=>x.id===editYardId);if(!e)return;if(w==='park')e.parkPay=s;else e.washPay=s;save();const pd='yp-'+(w==='park'?'pkPd':'wsPd');const up='yp-'+(w==='park'?'pkUp':'wsUp');document.getElementById(pd).className='popt ppaid'+(s==='paid'?' op':'');document.getElementById(up).className='popt punpaid'+(s==='unpaid'?' ou':'');flash('✓ Payment updated');renderYard();}
 function closePay(){document.getElementById('payMod').classList.add('hide');}
 
-function renderStats(){const today=new Date().toDateString();const todayE=DB.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===today);const inY=DB.filter(e=>e.timeIn&&!e.bookedOut);const photos=DB.reduce((a,e)=>a+(e.photos||[]).length+(e.extraPhotos||[]).length,0);document.getElementById('s0').textContent=todayE.length;document.getElementById('s1').textContent=DB.length;document.getElementById('s2').textContent=inY.length;document.getElementById('s3').textContent=photos;const counts={};DB.forEach(e=>counts[e.type]=(counts[e.type]||0)+1);const mx=Math.max(...Object.values(counts),1);document.getElementById('typechart').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([t,c])=>'<div class="bar"><div class="brt"><span>'+TI[t]+' '+TL[t]+'</span><span style="font-weight:700">'+c+'</span></div><div class="brb"><div class="brf" style="width:'+Math.round(c/mx*100)+'%"></div></div></div>').join('')||'<p style="color:#ccc;font-size:13px">No data yet</p>';document.getElementById('recact').innerHTML=DB.slice(0,10).map(e=>{const inYard=e.timeIn&&!e.bookedOut;return'<div class="ra-item"><span style="font-size:20px">'+TI[e.type]+'</span><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:800;font-family:monospace">'+e.plate+'</div><div style="font-size:11px;color:#888">'+TL[e.type]+' · '+(e.driver||'—')+'</div><div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">'+(e.timeIn?'<span style="font-size:10px;background:#e1f5ee;color:#0f6e56;padding:2px 6px;border-radius:6px;font-weight:600">⬇ '+fDT(e.timeIn)+'</span>':'')+(e.bookedOut&&e.timeOut?'<span style="font-size:10px;background:var(--rl);color:var(--rd);padding:2px 6px;border-radius:6px;font-weight:600">⬆ '+fDT(e.timeOut)+'</span>':'')+(inYard?'<span style="font-size:10px;background:var(--al);color:var(--am);padding:2px 6px;border-radius:6px;font-weight:600">In Yard</span>':'')+'</div></div><div style="font-size:10px;color:#bbb">'+(e.guard||'')+'</div></div>';}).join('')||'<p style="color:#ccc;font-size:13px">No entries yet</p>';}
+function renderStats(){const today=new Date().toDateString();const todayE=DB.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===today);const inY=DB.filter(e=>e.timeIn&&!e.bookedOut);const photos=DB.reduce((a,e)=>a+(e.photos||[]).length+(e.extraPhotos||[]).length,0);document.getElementById('s0').textContent=todayE.length;document.getElementById('s1').textContent=DB.length;document.getElementById('s2').textContent=inY.length;document.getElementById('s3').textContent=photos;
+  const usedBytes=new Blob([JSON.stringify(DB)]).size;
+  const usedMB=(usedBytes/1024/1024).toFixed(1);
+  const limitMB=5; // typical safe browser localStorage limit
+  const pct=Math.min(100,Math.round(usedBytes/(limitMB*1024*1024)*100));
+  const barColor=pct>85?'var(--rd)':pct>60?'var(--am)':'var(--g)';
+  document.getElementById('storageBar').innerHTML='<div class="brt"><span>'+usedMB+' MB used</span><span style="font-weight:700">'+pct+'%</span></div><div class="brb"><div class="brf" style="width:'+pct+'%;background:'+barColor+'"></div></div>'+(pct>70?'<div style="font-size:11px;color:var(--rd);font-weight:600;margin-top:6px">⚠ Getting full — Sync now and consider exporting old entries</div>':'<div style="font-size:11px;color:#999;margin-top:6px">Photos are compressed automatically to save space</div>');
+  const counts={};DB.forEach(e=>counts[e.type]=(counts[e.type]||0)+1);const mx=Math.max(...Object.values(counts),1);document.getElementById('typechart').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([t,c])=>'<div class="bar"><div class="brt"><span>'+TI[t]+' '+TL[t]+'</span><span style="font-weight:700">'+c+'</span></div><div class="brb"><div class="brf" style="width:'+Math.round(c/mx*100)+'%"></div></div></div>').join('')||'<p style="color:#ccc;font-size:13px">No data yet</p>';document.getElementById('recact').innerHTML=DB.slice(0,10).map(e=>{const inYard=e.timeIn&&!e.bookedOut;return'<div class="ra-item"><span style="font-size:20px">'+TI[e.type]+'</span><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:800;font-family:monospace">'+e.plate+'</div><div style="font-size:11px;color:#888">'+TL[e.type]+' · '+(e.driver||'—')+'</div><div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">'+(e.timeIn?'<span style="font-size:10px;background:#e1f5ee;color:#0f6e56;padding:2px 6px;border-radius:6px;font-weight:600">⬇ '+fDT(e.timeIn)+'</span>':'')+(e.bookedOut&&e.timeOut?'<span style="font-size:10px;background:var(--rl);color:var(--rd);padding:2px 6px;border-radius:6px;font-weight:600">⬆ '+fDT(e.timeOut)+'</span>':'')+(inYard?'<span style="font-size:10px;background:var(--al);color:var(--am);padding:2px 6px;border-radius:6px;font-weight:600">In Yard</span>':'')+'</div></div><div style="font-size:10px;color:#bbb">'+(e.guard||'')+'</div></div>';}).join('')||'<p style="color:#ccc;font-size:13px">No entries yet</p>';}
 
 function shareLog(){const today=new Date().toDateString();const todayE=DB.filter(e=>new Date(e.timeIn||e.timeOut||0).toDateString()===today);if(!todayE.length){flash('⚠ No entries today to share');return;}let msg='*GATE LOG — '+new Date().toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'})+'*\n\n';todayE.forEach(e=>{msg+='*'+e.plate+'* — '+TL[e.type]+'\n';if(e.driver)msg+='Driver: '+e.driver+'\n';if(e.company)msg+='Company: '+e.company+'\n';if(e.timeIn)msg+='⬇ In: '+fDT(e.timeIn)+'\n';if(e.timeOut)msg+='⬆ Out: '+fDT(e.timeOut)+'\n';if(e.guard)msg+='Guard: '+e.guard+'\n';msg+='\n';});msg+='_Total: '+todayE.length+' entries_';window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');}
 
