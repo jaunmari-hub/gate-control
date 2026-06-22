@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0057)file:///C:/Users/jaunmariv.FST/Downloads/index%20(7).html -->
+<!-- saved from url=(0057)file:///C:/Users/jaunmariv.FST/Downloads/index%20(9).html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -138,6 +138,7 @@ input,select,textarea,button{font-family:inherit;font-size:14px}
 input[type=file]{display:none}
 </style>
 <script src="./Gate Access Control_files/tesseract.min.js.download"></script>
+<script src="./Gate Access Control_files/index.min.js.download"></script>
 </head>
 <body>
 <div class="app">
@@ -161,7 +162,7 @@ input[type=file]{display:none}
 </div>
 
 <div id="pg-new" class="pg on">
-  <div class="clk"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span id="clk">Mon, 22 Jun 2026  11:40:17</span></div>
+  <div class="clk"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span id="clk">Mon, 22 Jun 2026  12:11:58</span></div>
   <div class="iotog">
     <button class="iob in on" id="ioIn" onclick="setIO(&#39;in&#39;)">⬇ BOOK IN</button>
     <button class="iob out" id="ioOut" onclick="setIO(&#39;out&#39;)">⬆ BOOK OUT</button>
@@ -691,8 +692,51 @@ function handleScanFile(e){
 }
 
 function runOCR(imageDataUrl){
-  document.getElementById('scanInner').innerHTML='<div style="text-align:center;padding:30px 0"><div class="ocr-spinner"></div><div style="font-size:13px;color:#666;font-weight:600">Reading text from photo...</div><div style="font-size:11px;color:#999;margin-top:6px">First scan may take longer while the reader loads</div></div>';
+  document.getElementById('scanInner').innerHTML='<div style="text-align:center;padding:30px 0"><div class="ocr-spinner"></div><div style="font-size:13px;color:#666;font-weight:600">Checking for a barcode...</div><div style="font-size:11px;color:#999;margin-top:6px">First scan may take longer while the reader loads</div></div>';
   document.getElementById('scanMod').classList.remove('hide');
+
+  attemptBarcodeDecode(imageDataUrl, function(barcodeText){
+    if(barcodeText && scanMode==='plate'){
+      if(looksEncryptedOrBinary(barcodeText)){
+        document.getElementById('scanInner').innerHTML='<div class="mt">Barcode found, but it\'s encrypted</div><div class="ms">This looks like a driver\'s license barcode — those are encrypted by government keys and can\'t be safely auto-read. Try scanning the printed plate/disc instead, or enter manually.</div><button class="cbtn" onclick="closeScan()">Close</button>';
+        return;
+      }
+      const guess=extractPlateGuess(barcodeText);
+      showScanResultPlate(guess, barcodeText, true);
+      return;
+    }
+    runTextOCR(imageDataUrl);
+  });
+}
+
+function attemptBarcodeDecode(imageDataUrl, callback){
+  if(typeof ZXing==='undefined'){ callback(null); return; }
+  try{
+    const hints=new Map();
+    hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS,[
+      ZXing.BarcodeFormat.PDF_417, ZXing.BarcodeFormat.QR_CODE,
+      ZXing.BarcodeFormat.CODE_128, ZXing.BarcodeFormat.CODE_39,
+      ZXing.BarcodeFormat.DATA_MATRIX
+    ]);
+    const reader=new ZXing.BrowserMultiFormatReader(hints);
+    reader.decodeFromImageUrl(imageDataUrl)
+      .then(result=>{ callback(result.getText()); })
+      .catch(()=>{ callback(null); });
+  }catch(e){ callback(null); }
+}
+
+function looksEncryptedOrBinary(text){
+  if(!text) return false;
+  let bad=0;
+  for(let i=0;i<text.length;i++){
+    const c=text.charCodeAt(i);
+    if(c<9 || (c>13&&c<32) || c>126) bad++;
+  }
+  return (bad/text.length) > 0.12;
+}
+
+function runTextOCR(imageDataUrl){
+  document.getElementById('scanInner').innerHTML='<div style="text-align:center;padding:30px 0"><div class="ocr-spinner"></div><div style="font-size:13px;color:#666;font-weight:600">No barcode found — reading text instead...</div><div style="font-size:11px;color:#999;margin-top:6px">First scan may take longer while the reader loads</div></div>';
 
   if(typeof Tesseract === 'undefined'){
     document.getElementById('scanInner').innerHTML='<div class="mt">Scanner unavailable</div><div class="ms">Could not load the text reader — check your internet connection and try again, or enter the value manually.</div><button class="cbtn" onclick="closeScan()">Close</button>';
@@ -704,7 +748,7 @@ function runOCR(imageDataUrl){
       const text=(result&&result.data&&result.data.text)||'';
       if(scanMode==='plate'){
         const guess=extractPlateGuess(text);
-        showScanResultPlate(guess, text);
+        showScanResultPlate(guess, text, false);
       } else {
         showScanResultText(text);
       }
@@ -728,15 +772,17 @@ function extractPlateGuess(text){
   return best;
 }
 
-function showScanResultPlate(guess, rawText){
+function showScanResultPlate(guess, rawText, fromBarcode){
   let html;
+  const sourceNote=fromBarcode?'Read from the barcode — usually very accurate':'Read from photo text — please double-check carefully';
   if(guess){
-    html='<div class="mt">Plate Detected</div><div class="ms">Review before using</div>'+
+    html='<div class="mt">Plate Detected</div><div class="ms">'+sourceNote+'</div>'+
       '<div class="plate-display" style="background:#fff9c4;border:2px solid #f59e0b;border-radius:8px;padding:14px;font-size:24px;font-weight:800;letter-spacing:3px;text-align:center;font-family:monospace;margin-bottom:14px">'+guess+'</div>'+
+      (fromBarcode?'<div style="background:#f5f5f3;border-radius:8px;padding:8px 10px;font-size:11px;color:#888;font-family:monospace;white-space:pre-wrap;margin-bottom:14px;max-height:90px;overflow-y:auto">Full barcode data: '+esc(rawText)+'</div>':'')+
       '<button class="esave" onclick="applyScan(\''+guess+'\')">✓ Use This Plate</button>'+
       '<button class="cbtn" onclick="closeScan()">Enter Manually Instead</button>';
   } else {
-    html='<div class="mt">Could not detect a clear plate</div><div class="ms">Raw text found in the photo — tap to copy, or enter manually</div>'+
+    html='<div class="mt">Could not detect a clear plate</div><div class="ms">'+(fromBarcode?'Raw barcode data — look for the registration number':'Raw text found in the photo')+' — tap to copy, or enter manually</div>'+
       '<div style="background:#f5f5f3;border-radius:8px;padding:10px;font-size:12px;font-family:monospace;white-space:pre-wrap;margin-bottom:14px;max-height:150px;overflow-y:auto">'+esc(rawText||'(no text found)')+'</div>'+
       '<button class="cbtn" onclick="closeScan()">Enter Manually</button>';
   }
